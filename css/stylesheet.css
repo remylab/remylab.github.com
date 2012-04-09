@@ -260,6 +260,39 @@ img {
   max-width: 100%;
 }
 
+#breadcrumb {
+	font-size:14px;
+    height: 1.2em;
+}
+#breadcrumb ul,
+#breadcrumb ul li {
+	font-style:italic;
+	color:grey;
+    margin-bottom: 0;
+}
+#breadcrumb ul li {
+    float: left;
+    width: auto;
+    margin-left: 0.3em;
+    padding-left: 0.3em;
+    list-style: none;
+}
+#breadcrumb ul,
+#breadcrumb ul li.first {
+    margin-left: 0;
+    padding-left: 0;
+}
+#breadcrumb a {
+	color:#373737;
+    text-decoration: none;
+}
+#breadcrumb a:hover {
+    text-decoration: underline;
+}
+#breadcrumb.inner {
+    padding:4px 0;
+}
+
 /*******************************************************************************
 Full-Width Styles
 *******************************************************************************/
@@ -365,10 +398,11 @@ Full-Width Styles
 }
 
 #main_content {
-  padding-top: 40px;
+  padding-top: 30px;
 }
 
 #footer_wrap {
+  font-size:14px;
   background: #212121;
 }
 
