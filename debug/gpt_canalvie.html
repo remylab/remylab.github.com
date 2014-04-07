@@ -1,6 +1,85 @@
 <html>
 <head>
 
+
+
+<script class="kxct" data-id="I3-1j0iA" data-timing="async" data-version="1.9" type="text/javascript">
+   window.Krux||((Krux=function(){Krux.q.push(arguments)}).q=[]);
+   (function(){
+       var k=document.createElement('script');k.type='text/javascript';k.async=true;
+       var m,src=(m=location.href.match(/\bkxsrc=([^&]+)/))&&decodeURIComponent(m[1]);
+       k.src = /^https?:\/\/([^\/]+\.)?krxd\.net(:\d{1,5})?\//i.test(src) ? src : src === "disable" ? "" :
+       (location.protocol==="https:"?"https:":"http:")+"//cdn.krxd.net/controltag?confid=I3-1j0iA";
+       var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(k,s);
+   }());
+</script> 
+
+<script type='text/javascript'>
+    var ROOT = '/';
+    var ROOT_ENV = 'production';  
+    
+    window.ENV  = ROOT_ENV;
+    window.ROOT = ROOT;
+    window.data  = window.data || {};
+    
+    window.data.ogImageSrc    = "http:\/\/www.canalvie.com\/img\/canalvie\/logo\/canalvie-280x230.jpg";
+    window.data.ogDescription = "Horaire des \u00E9missions, sections recettes, maison, famille, sant\u00E9-beaut\u00E9, couple, forums et webt\u00E9l\u00E9.";
+    window.data.reqJs         = "http:\/\/prod-front1.astral.atex.cniweb.net:8080\/cmlink\/CanalVie.d";
+    window.data.userActionTitle = "Canal Vie";
+    
+    getSiteId = function() { 
+        return "2.703";
+    }
+    
+    var LOGIN_SUCCESS = "login.success";
+    var REGISTER_SUCCESS = "register.success";
+
+    var cookielessDomain = 'www.canalvie.com';
+
+    window.Krux||((Krux=function(){Krux.q.push(arguments);}).q=[]); 
+    (function(){ 
+        function retrieve(n){ 
+            var m, k='kx'+n; 
+            if (window.localStorage) { 
+                return window.localStorage[k] || ""; 
+            } else if (navigator.cookieEnabled) { 
+                m = document.cookie.match(k+'=([^;]*)'); 
+                return (m && unescape(m[1])) || ""; 
+            } else { 
+                return ''; 
+            } 
+        } 
+        Krux.user = retrieve('user'); 
+        Krux.segments = retrieve('segs') && retrieve('segs').split(',') || []; 
+    })(); 
+
+    var gptadslots=[];
+    var googletag = googletag || {};
+    googletag.cmd = googletag.cmd || [];
+    (function(){ var gads = document.createElement('script');
+        gads.async = true; gads.type = 'text/javascript';
+        var useSSL = 'https:' == document.location.protocol;
+        gads.src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
+        var node = document.getElementsByTagName('script')[0];
+        node.parentNode.insertBefore(gads, node);
+    })(); 
+    
+    googletag.cmd.push(function() {
+        googletag.pubads().enableSingleRequest();
+        googletag.pubads().collapseEmptyDivs();
+        
+        googletag.defineOutOfPageSlot('/3826/sri.canalvie/homepage', 'div-gpt-ad-oop').addService(googletag.pubads());
+       
+                                        
+                                 googletag.pubads().setTargeting("ksgmnt", Krux.segments);
+           googletag.pubads().setTargeting("u", Krux.user);
+            
+       googletag.pubads().enableAsyncRendering();
+       googletag.enableServices();
+    }); 
+</script>
+
+
 <!--  GOOD SCRIPTS -->
 <script type="text/javascript" src="http://cdn.gigya.com/JS/socialize.js?apikey=2_1_L_M68VhGW4trWvXZ0Z82kWuL1WHaVaU2tm6w37KxrQVCqHidxjCI0OrwKghLTA&lang=fr-ca"></script>
 
@@ -74,61 +153,6 @@
 <!--  BAD SCRIPTS -->
 
 
-<script class="kxct" data-id="I3-1j0iA" data-timing="async" data-version="1.9" type="text/javascript">
-   window.Krux||((Krux=function(){Krux.q.push(arguments)}).q=[]);
-   (function(){
-       var k=document.createElement('script');k.type='text/javascript';k.async=true;
-       var m,src=(m=location.href.match(/\bkxsrc=([^&]+)/))&&decodeURIComponent(m[1]);
-       k.src = /^https?:\/\/([^\/]+\.)?krxd\.net(:\d{1,5})?\//i.test(src) ? src : src === "disable" ? "" :
-       (location.protocol==="https:"?"https:":"http:")+"//cdn.krxd.net/controltag?confid=I3-1j0iA";
-       var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(k,s);
-   }());
-</script> 
-
-<script type='text/javascript'>
-    window.Krux||((Krux=function(){Krux.q.push(arguments);}).q=[]); 
-    (function(){ 
-        function retrieve(n){ 
-            var m, k='kx'+n; 
-            if (window.localStorage) { 
-                return window.localStorage[k] || ""; 
-            } else if (navigator.cookieEnabled) { 
-                m = document.cookie.match(k+'=([^;]*)'); 
-                return (m && unescape(m[1])) || ""; 
-            } else { 
-                return ''; 
-            } 
-        } 
-        Krux.user = retrieve('user'); 
-        Krux.segments = retrieve('segs') && retrieve('segs').split(',') || []; 
-    })(); 
-
-    var gptadslots=[];
-    var googletag = googletag || {};
-    googletag.cmd = googletag.cmd || [];
-    (function(){ var gads = document.createElement('script');
-        gads.async = true; gads.type = 'text/javascript';
-        var useSSL = 'https:' == document.location.protocol;
-        gads.src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
-        var node = document.getElementsByTagName('script')[0];
-        node.parentNode.insertBefore(gads, node);
-    })(); 
-    
-    googletag.cmd.push(function() {
-        googletag.pubads().enableSingleRequest();
-        googletag.pubads().collapseEmptyDivs();
-        
-        googletag.defineOutOfPageSlot('/3826/sri.canalvie/homepage', 'div-gpt-ad-oop').addService(googletag.pubads());
-       
-                                        
-                                 googletag.pubads().setTargeting("ksgmnt", Krux.segments);
-           googletag.pubads().setTargeting("u", Krux.user);
-            
-       googletag.pubads().enableAsyncRendering();
-       googletag.enableServices();
-    }); 
-</script>
-
 <script type="text/javascript">
     require(["http://www.canalvie.com/js/canalvie/30-ui.cv.js"]);
     require(["http://www.canalvie.com/js/canalvie/main.cvie.backend.js"]);
@@ -137,7 +161,7 @@
 </head>
 <body>
 
-UPDATE #17
+UPDATE #20
 
 
 <p>SLOT #1</p>
