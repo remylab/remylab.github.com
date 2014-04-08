@@ -83,38 +83,16 @@
 <script type="text/javascript" src="http://cdn.gigya.com/JS/socialize.js?apikey=2_1_L_M68VhGW4trWvXZ0Z82kWuL1WHaVaU2tm6w37KxrQVCqHidxjCI0OrwKghLTA&lang=fr-ca"></script>
 
 
-<script>
-//Global enviroment. accepted values : production , development
-//change this to turn console messages on or off
- 
-if (typeof ROOT_ENV != "undefined") {
-    window.ENV = ROOT_ENV || window.ENV || parent.window.ENV;
-} else if (!window.ENV) {
-    window.ENV = parent.window.ENV;
-}
-var ENV         = window.ENV || 'local';
-window.JSDIR    = 'js/canalvie';
-window.DEV_ROOT = '/canalvie2012/'; //this is the root for the dev server, do not include domain and protocol
-window.TESTDIR  = 'js/test';
-window.specsDIR = window.specsDIR || window.TESTDIR + '/ui/specs';
-window.mocksDIR = window.mocksDIR || window.TESTDIR + '/ui/mocks';
- 
-/* ROOT And RequireJS Configuration
- ----------------------------*/
- 
-window.ABS_ROOT = 'http://www.canalvie.com/';
+<script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 
-</script>
 
-<script type="text/javascript" src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
 
 
 </head>
-
 <body>
 
+UPDATE #x1
 
-<p>UPDATE X1</p>
 
 <p>SLOT #1</p>
 <script type='text/javascript'>
