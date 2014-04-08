@@ -82,7 +82,125 @@
 
 <script type="text/javascript" src="http://cdn.gigya.com/JS/socialize.js?apikey=2_1_L_M68VhGW4trWvXZ0Z82kWuL1WHaVaU2tm6w37KxrQVCqHidxjCI0OrwKghLTA&lang=fr-ca"></script>
 
-<script type="text/javascript" src="http://www.canalvie.com/js/canalvie/config.js"></script>
+
+<script>
+//Global enviroment. accepted values : production , development
+//change this to turn console messages on or off
+ 
+if (typeof ROOT_ENV != "undefined") {
+    window.ENV = ROOT_ENV || window.ENV || parent.window.ENV;
+} else if (!window.ENV) {
+    window.ENV = parent.window.ENV;
+}
+var ENV         = window.ENV || 'local';
+window.JSDIR    = 'js/canalvie';
+window.DEV_ROOT = '/canalvie2012/'; //this is the root for the dev server, do not include domain and protocol
+window.TESTDIR  = 'js/test';
+window.specsDIR = window.specsDIR || window.TESTDIR + '/ui/specs';
+window.mocksDIR = window.mocksDIR || window.TESTDIR + '/ui/mocks';
+ 
+/* ROOT And RequireJS Configuration
+ ----------------------------*/
+ 
+window.ABS_ROOT = 'http://www.canalvie.com/';
+ 
+var require = {
+    baseUrl: window.ABS_ROOT + window.JSDIR + '/main/src/',
+    deps: ["ns"],
+    paths: {
+        astral:       window.ABS_ROOT + 'js/astral/',
+        backend:      window.ABS_ROOT + 'js/astral/backend/',
+        ns:           window.ABS_ROOT + window.JSDIR + '/ns',  //NAMESPACE FILE FOR THE PROJECT
+        ui:           window.ABS_ROOT + window.JSDIR + '/main/src/',
+        Class:        window.ABS_ROOT + window.JSDIR + '/main/src/Class',
+        plugins:      window.ABS_ROOT + window.JSDIR + '/ui.plugins',
+        app:          window.ABS_ROOT + window.JSDIR + '/app/',
+        moment:       window.ABS_ROOT + window.JSDIR + '/app/weddingplanner/moment.min',
+        accounting:   window.ABS_ROOT + window.JSDIR + '/app/weddingplanner/accounting.min',
+        backendcv:    window.ABS_ROOT + window.JSDIR + '/backend.require',
+        membership:   window.ABS_ROOT + window.JSDIR + '/membership',
+        jquery:       window.ABS_ROOT + window.JSDIR + '/main/src/jquery',
+        test:         window.ABS_ROOT + window.TESTDIR,
+        Squire:       window.ABS_ROOT + window.TESTDIR + '/vendor/Squire',
+        specs:        window.ABS_ROOT + window.TESTDIR + window.specsDIR,
+        mocks:        window.ABS_ROOT + window.TESTDIR + window.mocksDIR
+    },
+    waitSeconds: 15,
+    "shim": {
+        "jquery.migrate": {
+            deps: ['jquery']
+        },
+        "jquery.cookie": {
+            deps: ['jquery'],
+            exports: '$.fn.cookie'
+        },
+        "jquery.chained": {
+            deps: ['jquery'],
+            exports: '$'
+        },
+        "jquery.colorbox": {
+            deps: ['jquery'],
+            exports: '$.fn.colorbox'
+        },
+        "jquery.inFieldLabels":  {
+            deps: ['jquery'],
+            exports: '$.fn.inFieldLabels'
+        },
+        "jquery.joinInputs": {
+            deps: ['jquery'],
+            exports: '$.fn.beta'
+        },
+        "jquery.form": ['jquery'],
+        "jquery.tools": {
+            deps: ['jquery'],
+            exports: '$'
+        },
+        "jquery.ui": {
+            deps: ['jquery'],
+            exports: '$'
+        },
+        "jquery.easing": ['jquery'],
+        "jquery.validate": {
+            deps: ['jquery'],
+            exports: '$.validator'
+        },
+        "jquery.carouFredSel": {
+            deps: ['jquery'],
+            exports: '$.fn.carouFredSel'
+        },
+        "jquery.touchSwipe": {
+            deps: ['jquery'],
+            exports: '$'
+        },
+        "jquery.hammer": {
+            deps: ['jquery'],
+            exports: '$'
+        },
+        "jquery.roundabout": {
+            deps: ['jquery'],
+            exports: '$.fn.roundabout'
+        },
+        "jquery.transit": {
+            deps: ['jquery'],
+            exports: '$'
+        },
+        "jquery.placeholder": {
+            deps: ['jquery'],
+            exports: '$.fn.placeholder'
+        },
+        "swfobject": {
+            exports: 'swfobject'
+        },
+        "Class": {
+            exports: "Class"
+        }
+    }
+};
+ 
+ 
+</script>
+
+
 <script type="text/javascript" src="http://www.canalvie.com/js/canalvie/require.js"></script>
 <script type="text/javascript" src="http://www.canalvie.com/js/astral/jquery-1.8.2.min.js"></script>
 
@@ -160,14 +278,14 @@
 
 
 <script type="text/javascript">
-    //require(["http://www.canalvie.com/js/canalvie/30-ui.cv.js"]);
+    require(["http://www.canalvie.com/js/canalvie/30-ui.cv.js"]);
     //require(["http://www.canalvie.com/js/canalvie/main.cvie.backend.js"]);
 </script>
 
 </head>
 <body>
 
-UPDATE #6
+UPDATE #7
 
 
 <p>SLOT #1</p>
