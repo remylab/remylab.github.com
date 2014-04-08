@@ -286,10 +286,10 @@ var require = {
     require(["app/appregister"], function(e) {})
     require(["app/appcookies"], function(e) {})
     
-    //window.astral = astral || {};
-    //window.astral.omniture = astral.omniture || {};
+    var astral = astral || {};
+    astral.omniture = astral.omniture || {};
 
-    /*
+
     astral.omniture.onMembershipRegisterOK = function (siteId) {
 
         astral.membership.initUsercookie(siteId);
@@ -402,13 +402,13 @@ var require = {
         } else {
             return val;
         }
-    } */
+    } 
 </script>
 
 </head>
 <body>
 
-UPDATE #14
+UPDATE #15
 
 
 <p>SLOT #1</p>
