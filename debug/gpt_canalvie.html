@@ -186,6 +186,18 @@ var require = {
     require(["http://www.canalvie.com/js/canalvie/main.cvie.backend.js"]);
 </script>
 
+<script type="text/javascript" src="http://www.canalvie.com/js/astral/usercookie.js"></script>
+<script type="text/javascript" src="http://www.canalvie.com/js/astral/ads.js" charset="utf-8" ></script>
+<script type="text/javascript" src="http://www.canalvie.com/js/canalvie/canalvie-all.min.js" charset="utf-8"></script>
+
+<script>
+    require(["backend/tve/tve-mobile"], function(tveMobile){
+        $(document).ready(function() {
+            $(document).trigger("tveMobileReady", [tveMobile]);
+        });
+    });
+</script>
+
 <script type="text/javascript" src="http://cdn.gigya.com/JS/socialize.js?apikey=2_1_L_M68VhGW4trWvXZ0Z82kWuL1WHaVaU2tm6w37KxrQVCqHidxjCI0OrwKghLTA&lang=fr-ca"></script>
 
 
@@ -193,7 +205,7 @@ var require = {
 </head>
 <body>
 
-UPDATE a5
+UPDATE a6
 
 <div id="wallpaperAd" class="bgWallpaper" role="banner"><a id="wallpaperAdUrl"></a></div>
 
