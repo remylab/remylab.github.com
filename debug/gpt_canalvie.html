@@ -285,12 +285,129 @@ var require = {
     require(["backendcv/OmnitureTracking"], function(e) {})
     require(["app/appregister"], function(e) {})
     require(["app/appcookies"], function(e) {})
+    
+    window.astral = window.astral || {};
+    window.astral.omniture = window.astral.omniture || {};
+
+    astral.omniture.onMembershipRegisterOK = function (siteId) {
+
+        astral.membership.initUsercookie(siteId);
+
+        (typeof s_track === "function") && s_track({
+            PageState: "016",
+            __usePrevious: false,
+            LoginState: "logged In",
+            MemberID: astral.membership.memberId,
+            Gender: astral.membership.gender,
+            City: astral.membership.city,
+            AgeGroup: astral.membership.ageGroup
+        });
+    };
+
+    astral.omniture.onMembershipUpdateProfile = function (siteId) {
+
+        astral.membership.initUsercookie(siteId);
+
+        (typeof s_track === "function") && s_track({
+            PageState: "018",
+            __usePrevious: false,
+            LoginState: "logged In",
+            MemberID: astral.membership.memberId,
+            Gender: astral.membership.gender,
+            City: astral.membership.city,
+            AgeGroup: astral.membership.ageGroup
+        });
+    };
+
+    astral.omniture.onMembershipDeleteConfirmed = function () {
+
+        (typeof s_track === "function") && s_track({
+            PageState: "020",
+            __usePrevious: false
+        });
+    };
+
+    astral.omniture.onPhotoViewedFromGallery = function (garlleryName) {
+
+        (typeof s_track === "function") && s_track({
+            PageState: "021",
+            __usePrevious: true,
+            PhotoGal: garlleryName
+        });
+    };
+
+    astral.omniture.internalSearchResult = function (searchType, nbHits, queryObject) {
+
+        var loginState;
+
+        if (astral.membership.isLoggedIn) {
+            loginState = "logged in";
+        } else {
+            loginState = "logged out";
+        }
+
+        (typeof s_track === "function") && s_track({
+            __usePrevious: true,
+            PageState: "036",
+            LoginState: loginState,
+            WebTeleKeyword: returnEmptyStringIfUndefined(queryObject["recherche"]),
+            WebTeleFiltres: returnEmptyStringIfUndefined(queryObject["filtre"]),
+            WebTeleThemes: returnEmptyStringIfUndefined(queryObject["categorie"]),
+            WebTeleSeries: returnEmptyStringIfUndefined(queryObject["émission"]),
+            WebTeleEmissions: returnEmptyStringIfUndefined(queryObject["émission"]),
+            WebTeleAfficher: returnEmptyStringIfUndefined(queryObject["videoTypes"]),
+            WebTeleNumResults: nbHits,
+            WebTeleResultsPage: returnDefaultPageNumber(queryObject["page"])
+        });
+    };
+
+    astral.omniture.onQuestionSubmited = function(){
+        (typeof s_track === "function") && s_track({
+            PageState: "041",
+            __usePrevious: false
+        });
+    };
+    
+    astral.omniture.onQuestionErrorOccur = function(){
+        (typeof s_track === "function") && s_track({
+            PageState: "042",
+            __usePrevious: false
+        });
+    };
+    
+    //omniture - links to official social media pages
+    $(window).load(function () {
+        $(".socialTracking a").bind("click", function () {
+            var socialName = $(this).attr('data-name');
+            (typeof s_track === "function") && s_track({
+                PageState: "023",
+                __usePrevious: true,
+                SMaccount: socialName
+            });
+        });
+    });
+
+    function returnEmptyStringIfUndefined(val) {
+        if (typeof val === 'undefined') {
+            return 'empty';
+        } else {
+            return val;
+        }
+    }
+
+    function returnDefaultPageNumber(val) {
+        if (typeof val === 'undefined') {
+            return '1';
+        } else {
+            return val;
+        }
+    }
 </script>
 
 </head>
 <body>
 
-UPDATE #11
+UPDATE #12
 
 
 <p>SLOT #1</p>
