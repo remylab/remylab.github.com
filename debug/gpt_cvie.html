@@ -148,20 +148,6 @@ window.Krux||((Krux=function(){Krux.q.push(arguments);}).q=[]);
             var node = document.getElementsByTagName('script')[0];
             node.parentNode.insertBefore(gads, node);
         })(); 
-        
-        googletag.cmd.push(function() {
-            googletag.pubads().enableSingleRequest();
-            googletag.pubads().collapseEmptyDivs();
-            
-            googletag.defineOutOfPageSlot('/3826/sri.canalvie/homepage', 'div-gpt-ad-oop').addService(googletag.pubads());
-            
-                                                
-                                        googletag.pubads().setTargeting("ksgmnt", Krux.segments); 
-                googletag.pubads().setTargeting("u", Krux.user); 
-                
-            googletag.pubads().enableAsyncRendering();
-            googletag.enableServices();
-        }); 
     }
     
  
@@ -2641,6 +2627,22 @@ if ( !(userAge === 'under12') ) {
 <div id='div-gpt-ad-oop'>    
     <script type='text/javascript'>
     googletag.cmd.push(function() { googletag.display('div-gpt-ad-oop'); });
+    
+
+    
+    googletag.cmd.push(function() {
+        googletag.pubads().enableSingleRequest();
+        googletag.pubads().collapseEmptyDivs();
+        
+        googletag.defineOutOfPageSlot('/3826/sri.canalvie/homepage', 'div-gpt-ad-oop').addService(googletag.pubads());
+        
+                                            
+                                    googletag.pubads().setTargeting("ksgmnt", Krux.segments); 
+            googletag.pubads().setTargeting("u", Krux.user); 
+            
+        googletag.pubads().enableAsyncRendering();
+        googletag.enableServices();
+    }); 
     </script>
 </div>         
             </body>

@@ -4,6 +4,9 @@
     <script src="http://code.createjs.com/easeljs-0.7.0.min.js"></script>
 
     <script>
+
+        var gravity = 10;
+    
         var __extends = this.__extends || function (d, b) {
             for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
             function __() { this.constructor = d; }
@@ -17,6 +20,8 @@
                 this.sprite = sprite;
                 this.dt = 0;
                 this.lastTick = 0;
+                this.groundY = this.sprite.y;
+                this.isJumping = false;
             }
     
             BaseSprite.prototype.setDt = function (time) {
@@ -30,8 +35,35 @@
             }
             
             BaseSprite.prototype.run = function () {
+            	
+            	if ( !this.isJumping ) {
+                    var sprite = this.sprite;
+                    sprite.x += sprite.vX * this.dt;
+            	}
+            }
+            
+            BaseSprite.prototype.jump = function () {
+
                 var sprite = this.sprite;
+                
+            	// init jump
+            	if ( !this.isJumping && sprite.y == this.groundY ) {
+            		sprite.vY = sprite.speed * 2;
+            		this.isJumping = true;
+            	}
+            	
                 sprite.x += sprite.vX * this.dt;
+                sprite.y += sprite.vY * this.dt;
+                
+                // time to go down !
+                if ( ( sprite.y - this.groundY ) >= 64 ) {
+                	sprite.vY *= -1;
+                }
+                
+                if ( this.isJumping && this.sprite.y <= this.groundY ) {
+                	this.isJumping = false;
+                	sprite.y = this.groundY ;
+                }
             }
             
         	return BaseSprite;
@@ -150,7 +182,7 @@
                 var man = manList[i];
                 
                 man.setDt( new Date().getTime() );
-                man.run();
+                man.jump();
                 
                 // hit the wall ? => turn back !
                 if (man.sprite.x <= 16 || man.sprite.x >= (screenWidth - 16) ) {
