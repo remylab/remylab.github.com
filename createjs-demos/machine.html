@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="js/createjs-2013.12.12.min.js"></script>
+
+    <script>    
+        var __extends = this.__extends || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+            function __() { this.constructor = d; }
+            __.prototype = b.prototype;
+            d.prototype = new __();
+        };
+    </script>
+    
+    
+    <script>
+        var canvas;
+        var stage;
+        
+        var queue
+        var img;
+        
+        var screenWidth;
+        var screenHeight;
+        
+        var loaderBar;
+        var bar;   
+        var loaderWidth;
+        var loaderColor;
+
+
+        function init() {
+            canvas = document.getElementById("testCanvas");
+            stage = new createjs.Stage(canvas);
+            
+            screenWidth = canvas.width;
+            screenHeight = canvas.height;
+            
+            // Display Loader 
+            var barHeight = 20;
+            loaderColor = createjs.Graphics.getRGB(200,250,150);
+            loaderBar = new createjs.Container();
+
+            bar = new createjs.Shape();
+            bar.graphics.beginFill(loaderColor).drawRect(0, 0, 1, barHeight).endFill();
+
+            imageContainer = new createjs.Container();
+            imageContainer.x = 200;
+            imageContainer.y = 200;
+
+            loaderWidth = 300;
+            stage.addChild(imageContainer);
+
+            var bgBar = new createjs.Shape();
+            var padding = 3
+            bgBar.graphics.setStrokeStyle(1).beginStroke(loaderColor).drawRect(-padding/2, -padding/2, loaderWidth+padding, barHeight+padding);
+
+            loaderBar.x = canvas.width - loaderWidth>>1;
+            loaderBar.y = canvas.height - barHeight>>1; 
+            loaderBar.addChild(bar, bgBar);    
+
+            stage.addChild(loaderBar);
+            
+
+            manifest = [
+                {src:"manSeq.png", id:"man"},
+                {src:"image0.jpg", id:"image0"},
+                {src:"image1.jpg", id:"image1"},
+                {src:"image2.jpg", id:"image2"},
+                {src:"image3.jpg", id:"image3"}
+            ];
+            
+            queue = new createjs.LoadQueue();
+            queue.installPlugin(createjs.Sound);
+            queue.on("complete", handleComplete, this);
+            queue.loadFile({id:"sound", src:"assets/Thunder1.ogg"});
+            queue.loadManifest(manifest, true, "assets/");
+            
+            queue.on("progress", handleProgress);
+            
+        }
+
+        function handleProgress(event) {
+            bar.scaleX = event.loaded * loaderWidth;
+            stage.update();
+        }
+
+        function handleComplete(event) {
+
+            loaderBar.visible = false;
+            stage.update();
+            
+            createjs.Sound.play("sound");
+            img = queue.getResult("man");
+            
+            var tile = createBitmapFill();
+            stage.addChild(tile);
+            stage.update();
+
+        }
+
+        function createBitmapFill() {
+        	var container = new createjs.Container();
+            var s = new createjs.Shape();
+            s.graphics.bf(img).dr(0, 0, 500, 400);
+            s.x = 0;
+            s.y = 0;
+            container.addChild(s);
+            return container;
+        }
+
+        function createTile() {
+            var container = new createjs.Container();
+            var bg = new createjs.Shape();
+            container.addChild(bg);
+            return container;
+        }
+
+        //called if there is an error loading the image (usually due to a 404)
+        function handleImageError(e) {
+            //console.log("Error Loading Image : " + e.target.src);
+        }
+    </script>
+</head>
+
+<body onload="init();">
+
+    <div class="canvasHolder">
+        <canvas id="testCanvas" width="800" height="400" style="border:solid 1px;"></canvas>
+    </div>
+</body>
+</html>
