@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="js/easeljs-0.7.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+
+    <script>
+        var __extends = this.__extends || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+            function __() { this.constructor = d; }
+            __.prototype = b.prototype;
+            d.prototype = new __();
+        };
+        
+        var BaseSprite = (function () {
+            
+            function BaseSprite(sprite) {
+                this.sprite = sprite;
+                this.dt = 0;
+                this.lastTick = 0;
+                this.direction = 1;
+            }
+    
+            BaseSprite.prototype.setDt = function (time) {
+                if ( this.lastTick == 0 ) {
+                    this.dt = 1/(60*100);
+                } else {
+                    this.dt = (time - this.lastTick)/100;
+                }
+                
+                this.lastTick = time;
+            }
+            
+            BaseSprite.prototype.run = function () {
+                var sprite = this.sprite;
+                sprite.x += sprite.vX * this.dt;
+            }        
+            
+            return BaseSprite;
+        })();
+        
+        var Man = (function (_super) {
+            __extends(Man, _super);
+            
+            function Man(sprite) {
+                _super.call(this, sprite);
+            }
+            
+            Man.prototype.flipDirectionWalk = function () {
+                var sprite = this.sprite;
+                sprite.vX *= -1;
+                var nextMap = {walkLeft: "walkLeft_h", walkLeft_h: "walkLeft"};
+                sprite.gotoAndPlay(nextMap[sprite.currentAnimation]);
+            };
+
+            Man.prototype.stop = function(){
+                if ( this.direction != 0 ) {
+                    this.sprite.gotoAndPlay("stand");
+                }
+                this.direction = 0;
+                this.sprite.Vx = 0;
+            }
+
+             Man.prototype.walk = function (direction) {
+                var sprite = this.sprite;
+                if(this.direction == 0){
+                    if (direction == 1) {
+                        sprite.vX = sprite.speed;
+                        sprite.gotoAndPlay("walkLeft_h");
+                    } else {
+                        sprite.vX = sprite.speed*-1;
+                        sprite.gotoAndPlay("walkLeft");
+                    }
+
+                } else {
+                    if (this.direction != direction){
+                        this.flipDirectionWalk();
+                    }
+                }  
+
+
+                this.direction = direction;
+                sprite.x += sprite.vX * 2;
+            }              
+            
+            return Man;
+        })(BaseSprite);
+    </script>
+    
+    
+    <script>
+        var canvas;
+        var stage;
+
+        var img = new Image();
+        var img2 = new Image();
+        var nbImageReady = 0;
+        var manList;
+        
+        var screenWidth;
+        var screenHeight;
+
+        var walkingman = {}
+        walkingman.pressedKeys = [];
+           var KEY = {
+                 LEFT: 37,
+                 RIGHT: 39,
+                 UP: 38,
+                 DOWN: 40,
+                 W: 87,
+                 S: 83
+            }
+
+        function init() {
+            //find canvas and load images, wait for last image to load
+            canvas = document.getElementById("testCanvas");
+
+            // create a new stage and point it at our canvas:
+            stage = new createjs.Stage(canvas);
+            
+            screenWidth = canvas.width;
+            screenHeight = canvas.height;
+
+
+            img.src = "assets/manSeq.png";
+            img.onload = imageReady;
+
+            img2.src = "assets/MonsterAIdle.png";
+            img2.onload = imageReady;
+        }
+
+        function imageReady() {
+            nbImageReady +=1 ;
+            if ( nbImageReady == 2 ) {
+                startGame();
+            }
+        }
+        function startGame() {
+            // grab canvas width and height for later calculations:
+            var w = canvas.width;
+            var h = canvas.height;
+
+            // create spritesheet and assign the associated data.
+            var spriteSheet = new createjs.SpriteSheet({
+               images: [img, img2],
+               frames: {width: 64, height: 64, regX: 32, regY: 32 },
+               animations: {
+                   walkLeft: [0, 9,"walkLeft",0.25],
+                   stand: [10,20, "stand",0.25]
+               }
+            });
+
+            // clone animation to get walkRight = walkLeft_h => horizontal flip of walkLeft
+            createjs.SpriteSheetUtils.addFlippedFrames(spriteSheet, true, false, false);
+            spriteSheet.getAnimation("walkLeft_h").speed = 0.25;
+
+
+            manList = [];
+            // create a Sprite instance to display and play back the sprite sheet:
+            var sprite = new createjs.Sprite(spriteSheet);
+
+            // 1st man
+            sprite.name = "man";
+            sprite.speed = 2;
+            sprite.vX = sprite.speed;
+            sprite.vY = 0;
+            sprite.x = 16;
+            sprite.y = 32;
+            sprite.gotoAndPlay("stand");
+            
+            stage.addChild(sprite);
+            manList.push(new Man(sprite));
+            
+
+            sprite.addEventListener("animationend", animationEnd);
+
+
+            createjs.Ticker.addEventListener("tick", tick);
+            createjs.Ticker.setFPS(60);
+
+            $(document).keydown(function(e){
+                walkingman.pressedKeys[e.which] = true;
+            });
+            $(document).keyup(function(e){
+                 walkingman.pressedKeys[e.which] = false;
+            });
+
+        }
+
+        //called if there is an error loading the image (usually due to a 404)
+        function handleImageError(e) {
+            //console.log("Error Loading Image : " + e.target.src);
+        }
+
+        function tick(event) {
+            walkMovement();
+        }
+
+        function walkMovement(){
+            var l = manList.length;
+            for (var i = 0; i < l; i++) {
+                var man = manList[i];
+                
+                if(walkingman.pressedKeys[KEY.RIGHT]){
+                    man.walk(1);
+                }else if(walkingman.pressedKeys[KEY.LEFT]){
+                    man.walk(-1);
+
+                }else{
+                    man.stop();
+                }
+            }
+
+            // update the stage:
+            stage.update(event);          
+        }
+
+        function animationEnd(evt) {
+            // var sprite = evt.target;
+        }
+    </script>
+</head>
+
+<body onload="init();">
+
+    <div class="canvasHolder">
+        <canvas id="testCanvas" width="400" height="400" style="border:solid 1px;"></canvas>
+    </div>
+</body>
+</html>
