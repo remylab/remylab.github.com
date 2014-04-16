@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="http://code.createjs.com/easeljs-0.7.0.min.js"></script>
+    <script src="js/easeljs-0.7.0.min.js"></script>
 
     <script>
 
@@ -182,7 +182,7 @@
                 var man = manList[i];
                 
                 man.setDt( new Date().getTime() );
-                man.jump();
+                man.run();
                 
                 // hit the wall ? => turn back !
                 if (man.sprite.x <= 16 || man.sprite.x >= (screenWidth - 16) ) {
