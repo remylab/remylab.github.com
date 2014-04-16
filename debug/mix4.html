@@ -1,0 +1,1413 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+      <script>var vrak = vrak || {}; vrak.adCampaign = "mixmania"; </script>
+          
+        <!-- ## CSS for the entire site -->
+    <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/astral/astral-screen-main.min.css"  />
+    <!-- 
+        ## Astral User Interface : Original files contained within the minified above
+        <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/astral/screen.0.aui-reset.css"  />
+        <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/astral/screen.1.aui-base.css"  />
+        <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/astral/screen.2.aui-forms.css"  />
+        <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/astral/screen.4.aui-modules.css"  />
+    -->
+    <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/vrak/main/0.jquery-ui-1.10.3.custom.css"  />
+    <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/vrak/main/0.jquery.colorbox.css"  />
+    <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/vrak/main/1.vk.base.css"  />
+    <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/vrak/main/2.vk.header-footer.css"  />
+    <link rel="stylesheet" type="text/css" media="screen,projection,tv"  href="http://mixmania.vrak.tv/css/vrak/main/4.vk.core-modules.css"  />
+    <!-- ## CSS responsive for mobiles -->
+    <link rel="stylesheet" type="text/css" media="only screen and (min-device-width:605px) and (max-device-width:1024px)"  href="http://mixmania.vrak.tv/css/vrak/if-screen-tablet-vk.css"  />
+    <link rel="stylesheet" type="text/css" media="only screen and (max-width:605px)"  href="http://mixmania.vrak.tv/css/vrak/if-screen-mobile-vk.css"  title="Smartphone" />
+    <script type="text/javascript"  src="http://mixmania.vrak.tv/js/vrak/ui.require/jquery.js"  charset="utf-8"></script>
+    <!-- ## Gigya API key -->
+    <script type="text/javascript">
+        var ROOT = 'http://mixmania.vrak.tv/';
+        var ROOT_ENV = 'production';
+        
+        var LOGIN_SUCCESS = "login.success";
+        var REGISTER_SUCCESS = "register.success";
+      
+        //Get top domain from url
+        var parts = location.hostname.split('.');
+        var topDomain = parts.length <= 1? location.hostname : [parts.pop(), parts.pop()].reverse().join(".");
+        //document.domain = topDomain;
+        
+         //Ad campaign for publicity
+        var vrak = vrak || {};
+        vrak.adCampaign = vrak.adCampaign || 'external';
+        vrak.adSubSection = vrak.adSubSection || window.location.pathname.split('/').pop() || "homepage";
+    </script>
+    <!-- ## alternative CSS -->
+    <!--[if lte IE 8]><link rel="stylesheet" type="text/css" media="all"  href="http://mixmania.vrak.tv/css/vrak/if-ie8-ie7.css"  /><![endif]-->
+    <link rel="stylesheet" type="text/css" media="print"  href="http://mixmania.vrak.tv/css/astral/print.aui.css"  />
+    <link rel="stylesheet" type="text/css" media="print"  href="http://mixmania.vrak.tv/css/vrak/if-print-vk.css"  />
+    <!-- ## metas -->
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1,requiresActiveX=true">
+    <link rel="shortcut icon" type="image/x-icon" href="http://www.vrak.tv/img/vrak/logo/favicon.ico" />
+    <link rel="icon" type="image/png" href="http://www.vrak.tv/img/vrak/logo/favicon.png" />
+    <link rel="search" type="application/opensearchdescription+xml" href="http://www.vrak.tv/xml/vrak/opensearch.xml" title="VRAK.TV" />
+    <!-- Front-end scripts -->
+    <script  src="http://mixmania.vrak.tv/js/vrak/config.js" ></script>
+    <script  src="http://mixmania.vrak.tv/js/vrak/require.js" ></script>
+    <script  src="http://mixmania.vrak.tv/js/astral/usercookie.js"  charset="utf-8"></script>
+    <script>
+      require(["export.main.vk.ui"]);
+        $(function() {
+            var siteId = 2.2531;
+
+            astral.membership.initUsercookie(siteId);
+            var domain = "http://www.vrak.tv";
+            vrak.loginUrl    = domain + "/cmlink/vrak.loginElement?siteId=" + siteId;
+            vrak.registerUrl = domain + "/vrak.loginElement?action=creer-un-compte";
+            vrak.profileUrl  = domain + "/vrak.loginElement?action=votre-profil";
+            vrak.logoutUrl   = domain + "/membership/logout?siteId=" + siteId;
+
+            $(".membership .login a").attr("href", vrak.loginUrl + "&redirectURL=" + window.location.href);
+            $(".membership .register a").attr("href", vrak.registerUrl + "&redirectURL=" + window.location.href);
+            $(".membership .profile a").attr("href", vrak.profileUrl);
+            $(".loginBox .avatar").attr("href", vrak.profileUrl);
+            $(".membership .logout a").attr("href", vrak.logoutUrl + "&redirectURL=" + window.location.href);
+
+            if (astral.membership.screenName) {
+                $(".membership .login, .membership .register").hide();
+                $(".membership .profile a").text(astral.membership.screenName);
+                $(".loginBox .avatar").attr("title", astral.membership.screenName);
+                if (astral.membership.profileImage !== "null") {
+                    $(".loginBox .avatar img").attr("src", astral.membership.profileImage);
+                }
+                $(".membership .profile, .membership .logout").show();
+            }
+        });
+    </script>
+    <script type="text/javascript"  src="http://mixmania.vrak.tv/js/astral/ads.js"  charset="utf-8" ></script>
+	<script type="text/javascript" src="http://vrak.local:8080/js/astral/gpt_external.js"></script>
+
+
+      
+<link href="http://mixmania.vrak.tv/cache/fr/mm4-phase7-css.css?phase-7-" media="all" rel="stylesheet">
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' rel='stylesheet' type='text/css'>
+
+<script src="http://admin.brightcove.com/js/APIModules_all.js"> </script>
+<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+<script type="text/javascript" src="http://mixmania.vrak.tv/cache/fr/mm4-js.js"></script>
+
+
+<title>Nouvelles | Mix4 | Émissions | Télévision | VRAK.TV</title>
+
+<meta name="description" content="Mix 4, c'est le retour de Mixmania dans une version complètement renouvelée, animée par Olivier Dion et diffusée sur Vrak.tv!" />
+<meta name="keywords" content="Mix4, Mixmania, Danse, Chant" />
+<meta property="og:title" content="Mix 4 | À propos | " />
+<meta property="og:description" content="Mix 4, c'est le retour de Mixmania dans une version complètement renouvelée, animée par Olivier Dion et diffusée sur Vrak.tv!" />
+<meta property="og:image" content="http://mixmania.vrak.tv/static/images/opengraph-logo.png" />
+<meta property="og:url" content="http://mixmania.vrak.tv" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+
+
+
+
+
+
+<!--[if lte IE 8]>
+<script type="text/javascript">
+  jQuery.noConflict();
+  (function($) {
+    $(function() {
+      if (1 || !$.cookie('not-optimized'))
+      {
+        var tplbody = $("#tpl_not_optimized").html();
+        var tmpl = new jSmart(tplbody);
+        var rendered = tmpl.fetch({});
+        var not_optimized_lightbox = new Turbulent.Lightbox({
+          class_name:"not-optimized-lightbox",
+          content:rendered
+        });
+
+        not_optimized_lightbox.fadeIn();
+
+        $.cookie('not-optimized', true, { expires: 1, path:'/' });
+      }
+    });
+  })(jQuery);
+  </script>
+<![endif]-->
+
+    
+    <!-- Begin comScore Inline Tag 1.1111.15 -->
+    <script type="text/javascript">
+    // <![CDATA[
+    function udm_(a){var b="comScore=",c=document,d=c.cookie,e="",f="indexOf",g="substring",h="length",i=2048,j,k="&ns_",l="&",m,n,o,p,q=window,r=q.encodeURIComponent||escape;if(d[f](b)+1)for(o=0,n=d.split(";"),p=n[h];o<p;o++)m=n[o][f](b),m+1&&(e=l+unescape(n[o][g](m+b[h])));a+=k+"_t="+ +(new Date)+k+"c="+(c.characterSet||c.defaultCharset||"")+"&c8="+r(c.title)+e+"&c7="+r(c.URL)+"&c9="+r(c.referrer),a[h]>i&&a[f](l)>0&&(j=a[g](0,i-8).lastIndexOf(l),a=(a[g](0,j)+k+"cut="+r(a[g](j+1)))[g](0,i)),c.images?(m=new Image,q.ns_p||(ns_p=m),m.src=a):c.write("<","p","><",'img src="',a,'" height="1" width="1" alt="*"',"><","/p",">")}
+udm_('http://b.scorecardresearch.com/p?c1=2&c2=14990625&application_id=125554&name=125554.themixiv.content&ns_site=cmf-fmc&content1=richinteractivemedia&class1=convergent.vapa.aboriginal&class2=website');
+    // ]]>
+    </script>
+    <noscript><p><img src="http://b.scorecardresearch.com/p?c1=2&c2=14990625" height="1" width="1" alt="*"></p></noscript>
+    <!-- End comScore Inline Tag -->
+    <!-- Begin comScore Inline Tag 1.1111.15 -->
+    <script type="text/javascript" language="JavaScript1.3" src="http://b.scorecardresearch.com/c2/14990625/cs.js"></script>
+    <!-- End comScore Inline Tag -->
+
+    
+    
+    <script type="text/javascript">
+
+      jQuery.noConflict();
+      (function($) {
+        $(function() {
+          window.GA = new MM4.Analytics({});
+          
+        
+
+  window.page = new MM4.Home({ });
+  
+
+        });
+      })(jQuery);
+
+      function onTemplateLoaded(experienceID) {
+  // Set ads, preroll or standard
+  // Load references to experience and modules
+
+  bcExp = brightcove.getExperience(experienceID);
+  modAd = bcExp.getModule(APIModules.ADVERTISING);
+  setAds();
+}
+
+// Google Analytics
+(function(i,s,o,g,r,a,m){ i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments) },i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-44555609-1', 'vrak.tv');
+ga('send', 'pageview');
+
+// Prerolls
+/*
+* http://jira.dev.astralnet.com:8080/browse/VRAK-2396
+* Voici donc la stratégie pour les pre-rolls :
+* - On met du pre-roll sur les vidéos de plus de 2 minutes pour un ratio de 1 pre-roll sur 5 vidéos
+* - Le setting pour la pub est : 1 pre-roll+2 companions
+**/
+
+// Set this value dynamically please
+var videoLength =  222;
+
+// Set this to true to show error alerts
+var ALERT_ERRORS = false;
+
+// Set preroll frequency: one every PREROLL_FREQ
+var PREROLL_FREQ = 5;
+
+// Set DFP site and zone for preroll, companions and standard ads
+var DFP_SITE = "/3826/sri.vrak"; //to sri.vrak
+var DFP_ZONE = "external";
+
+// Size or preroll
+var bcSz = "9x9";
+
+if (videoLength > 120) {
+  bcSz = "9x10";
+}
+
+// Check if we have a preroll cookie or create one
+if (jQuery.cookie("videoPlayedWithoutPreroll") == null) {
+  jQuery.cookie("videoPlayedWithoutPreroll", PREROLL_FREQ);
+}
+
+// Increment cookie value
+function incrementPrerollCookie() {
+  var cookieValue = jQuery.cookie("videoPlayedWithoutPreroll");
+
+  if (cookieValue != null) {
+
+    cookieValue++;
+    jQuery.cookie("videoPlayedWithoutPreroll", cookieValue);
+  } else {
+    if (ALERT_ERRORS)
+      alert("Error in incrementPrerollCookie(): could not find preroll cookie.");
+  }
+}
+
+// Reset cookie value
+function resetPrerollCookie() {
+  jQuery.cookie("videoPlayedWithoutPreroll", 0);
+}
+
+// We display prerolls only when videos without preroll >= PREROLL_FREQ and video length > 120s
+function isPreroll() {
+  var cookieValue = jQuery.cookie("videoPlayedWithoutPreroll");
+
+  if (cookieValue != null)
+  {
+    if (cookieValue >= PREROLL_FREQ-1 && videoLength > 120)
+      return true;
+    else
+      return false;
+  }
+  else
+  {
+    if (ALERT_ERRORS)
+      alert("Error in isPreroll(): could not find preroll cookie.");
+
+    return false;
+  }
+}
+
+
+var modAd;
+var originalKeys;
+var bcOrd = Math.round(Math.random()*100000000000) + "";
+var bcExp;
+
+function setAds() {
+  if (isPreroll()) {
+    if (astral.usercookie.cookie.get("age") === "under12") {
+        return;
+    }
+    var gptAdUnit = DFP_SITE + "/" + DFP_ZONE;
+    var adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + gptAdUnit + "&sz=" + bcSz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
+    var adPolicy = Object.create(null);
+    adPolicy.adServerURL = adServerUrl;
+    adPolicy.prerollAds = true;
+    adPolicy.playerAdKeys = "showid%3D" + "3472" + "%26" + "showname%3D" + "mixmania";
+    adPolicy.midrollAds = true;
+    modAd.setAdPolicy(adPolicy);
+    resetPrerollCookie();
+  }
+  else{
+    incrementPrerollCookie();
+  }
+}
+
+
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '721032071262427',
+    status     : true,
+    xfbml      : true
+  });
+};
+
+(function(d, s, id){
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement(s); js.id = id;
+   js.src = "http://connect.facebook.net/en_US/all.js";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));
+
+
+    </script>
+  </head>
+  
+  <body class="phase-7 phase-7-plus   ">
+    
+    <div id="header-holder">
+                            
+        <div id="siteTopBackground"></div><!-- /#siteTopBackground -->
+<div id="doc" class="static" style="overflow: visible;">
+
+    <header class="main" id=""><!-- id stickyHeader -->
+
+        <a id="logo" href="http://www.vrak.tv/" title="VRAK.TV"><img src="http://mixmania.vrak.tv/img/vrak/logo/vrak-small.png" alt="logo VRAK.TV" /></a>
+
+        <nav id="topMenu">
+            <div class="loginBox">
+                <a class="avatar" href="#"><img src="http://mixmania.vrak.tv/img/vrak/avatar/plug_vrak.jpg" alt="avatar" width="60" height="60"><span class="border"></span></a>
+                <ul class="membership">
+                    <li class="login"><a class="jOverlay_wide" href="#" title="Connexion des membres">Me connecter</a></li>
+                    <li class="register"><a href="#" title="Créer un nouveau compte sur VRAK.TV">M'inscrire</a></li>
+                    <li class="profile" style="display: none;"><a href="#" title="Modifier mon profil"></a></li>
+                    <li class="logout" style="display: none;"><a href="#" title="Fermer ma session">Déconnexion</a></li>
+                </ul>
+            </div><!-- /.loginBox -->
+        </nav><!-- /#topMenu -->
+
+        <nav id="mainDropdownMenu" class="">
+            <a class="menuBtn" title="Menu du site"><span class="ico"></span><strong>Menu</strong></a>
+            <ul class="menu">
+                <!-- mainMenu -->
+                <li class="mainMenu"><a href="http://www.vrak.tv/emissions" title="Émissions">Émissions</a></li>
+                <li class="mainMenu"><a href="http://www.vrak.tv/horaire" title="Horaire">Horaire</a></li>
+                <li class="mainMenu"><a href="http://www.vrak.tv/section-stars" title="Section Stars">Section Stars</a></li>
+                <li class="mainMenu"><a href="http://www.vrak.tv/miss-vrak" title="Miss Vrak">Miss Vrak</a></li>
+                <li class="mainMenu"><a href="http://www.vrak.tv/blogue" title="Blogue">Blogue</a></li>
+                <li class="mainMenu"><a href="http://www.vrak.tv/salle-de-jeux" title="Salle de jeux">Salle de jeux</a></li>
+                <li class="mainMenu"><a href="http://www.vrak.tv/videos-vrak-tv" title="Vidéos VRAK.TV">Vidéos VRAK.TV</a></li>
+                <!-- subMenu -->
+                <li><a class="ico contest" href="http://www.vrak.tv/concours" title="Concours">Concours</a></li>
+                <li><a class="ico forum" href="http://forums.vrak.tv/" title="Forums">Forums</a></li>
+                <li><a class="ico app" href="http://www.vrak.tv/les-apps-vrak-tv" title="Les apps">Les apps de VRAK.TV</a></li>
+                <li><a class="ico faq" href="http://www.vrak.tv/faq" title="FAQ">FAQ</a></li>
+                <li><a class="ico contact" href="http://www.vrak.tv/nous-joindre" title="Nous joindre">Nous joindre</a></li>
+                <li class="last socialIcon">
+                    <a class="ico facebook externalLink" href="http://www.facebook.com/vraktv" title="Nous suivre sur Facebook"><span>Facebook</span></a>
+                    <a class="ico instagram externalLink" href="http://www.instagram.com/vraktv" title="Nous suivre sur Instagram"><span>Instagram</span></a>
+                    <a class="ico twitter externalLink" href="http://www.twitter.com/vraktv" title="Nous suivre sur Twitter"><span>Twitter</span></a>
+                </li>
+            </ul>
+        </nav><!-- /#mainDropdownMenu -->
+
+        <div class="clear"><hr class="hidden" /></div>
+        <div id="headerLeaderboard">
+            <div class="banner" role="banner">
+                <div class="alignBanner"id="gpt-top1"></div>
+                  <script type="text/javascript">
+                      base.gpt.renderAd("gpt-top1", "top", [[728,90]]);
+                  </script>
+            </div><!-- /.banner -->
+        </div><!-- /#headerLeaderboard -->
+    </header><!-- /#fullHeader -->
+</div><!-- /#doc -->
+
+                      </div>
+    <div class="clear"></div>
+    <div id="master" class="home">
+      
+      <div id="mm4-header">
+        <div class="wixx-wrapper">
+          Présenté par
+          <a href="http://wixx.ca/" target="_blank" class=""><img src="http://mixmania.vrak.tv/mm4/static/images/logo-wixx.png" /></a>
+        </div>
+        
+        <a href="/" class="zone-logo not-external"></a>
+        
+        <div class="pub ">
+                                    <div class="banner valignTop" role="banner">
+                <div class="alignBanner" id="gpt-ad-bigbox-top1">
+                  <script type="text/javascript">
+                    base.gpt.renderAd("gpt-ad-bigbox-top1", "top", [[300,250],[300,600],[300,1050]]);
+                  </script>
+                  <!--
+                  <noscript>
+                    <a href=""+ vrak.adCampaign +";ss="+ vrak.adSubSection +";pos=top;tile=2;sz=300x250,300x600,300x1050;ord=64898380451" target="pub"> <img src=""+ vrak.adCampaign +";ss="+ vrak.adSubSection +"pos=top;tile=2;sz=300x250,300x600,300x1050;ord=64898380451" width="300" height="250" alt="publicité"/></a>
+                  </noscript>
+                  -->
+                </div>
+              </div>
+                              </div>
+        <div class="more">
+          <div class="social">
+            Suis-nous sur
+            <span class="clear"></span>
+            <a href="https://www.facebook.com/mixmania?fref=ts" class="share fb general-sprite trans-03s js-MenuReseauxSociaux" target="_blank">Facebook</a>
+            <a href="https://twitter.com/mixmania" class="share tw general-sprite trans-03s js-MenuReseauxSociaux" target="_blank">Twitter</a>
+            <span class="clear"></span>
+          </div>
+          <div class="time">
+            <h2>JEUDI<br />17h30</h2>
+            <h3>En rappel:<br />Vendredi 19h,<br />Samedi 10h,<br />Dimanche 12h,<br />Lundi 16h</h3>
+          </div>
+        </div>
+        <div class="cboth"></div>
+        <div id="mm4-nav" class="smaller-font">
+            <a class="home  active" href="/"><div class="button trans-03s">Accueil</div><div class="arrow trans-03s"></div></a>
+<a class="tv " href="/a-la-tele"><div class="button trans-03s">À la télé</div><div class="arrow trans-03s"></div></a>
+<a class="mix " href="/les-mix"><div class="button trans-03s">Les mix</div><div class="arrow trans-03s"></div></a>
+<a class="videos " href="/les-videos"><div class="button trans-03s">Vidéos</div><div class="arrow trans-03s"></div></a>
+<a class="vote " href="/vote"><div class="button trans-03s">Vote</div><div class="arrow trans-03s"></div></a>
+<a class="mixagram " href="/mixagram"><div class="button trans-03s">Mixagram</div><div class="arrow trans-03s"></div></a>
+<a class="mixpop " href="/mix-pop"><div class="button trans-03s">Mix pop</div><div class="arrow trans-03s"></div></a>
+<a class="chansons " href="/chansons"><div class="button trans-03s">Chansons</div><div class="arrow trans-03s"></div></a>
+<a class="tournee  show-on-launch" href="/la-tournee"><div class="button trans-03s">Tournée</div><div class="arrow trans-03s"></div></a>          <div class="cboth"></div>
+        </div>
+        <div class="cboth"></div>
+      
+        
+      </div>
+      
+      <div id="mm4-header-mobile" class="mobile-only">
+        <div class="inner">
+          <div class="more">
+            <div class="time">
+              <h2>JEUDI<br />17h30</h2>
+              <h3>En rappel:<br />Vendredi 19h,<br />Samedi 10h,<br />Dimanche 12h,<br />Lundi 16h</h3>
+            </div>
+          </div>
+        </div>
+        <div class="nav">
+          <div class="inner">
+            <a href="#" class="menu-btn js-menu-btn">MENU</a>
+            
+            <div class="social">
+              <a href="https://www.facebook.com/mixmania?fref=ts" class="share fb general-sprite trans-03s js-MenuReseauxSociaux" target="_blank">Facebook</a>
+              <a href="https://twitter.com/mixmania" class="share tw general-sprite trans-03s js-MenuReseauxSociaux" target="_blank">Twitter</a>
+              <span class="clear"></span>
+            </div>
+            
+            <div class="clear"></div>
+          </div>
+        </div>
+        <div class="mobile-menu js-mobile-menu">
+          <ul>
+            <li><a class="home  active" href="/"><span class="inner">Accueil<span class="icon general-sprite"></span></span></a></li>
+            <li><a class="tv " href="/a-la-tele"><span class="inner">À la télé<span class="icon general-sprite"></span></span></a></li>
+            <li><a class="mix " href="/les-mix"><span class="inner">Les mix<span class="icon general-sprite"></span></span></a></li>
+            <li><a class="videos " href="/les-videos"><span class="inner">Vidéos<span class="icon general-sprite"></span></span></a></li>
+            <li><a class="vote " href="/vote"><span class="inner">Vote<span class="icon general-sprite"></span></span></a></li>
+            <li><a class="mixagram " href="/mixagram"><span class="inner">Mixagram<span class="icon general-sprite"></span></span></a></li>
+            <li><a class="mixpop " href="/mix-pop"><span class="inner">Mix pop<span class="icon general-sprite"></span></span></a></li>
+            <li><a class="chansons " href="/chansons"><span class="inner">Chansons<span class="icon general-sprite"></span></span></a></li>
+            <li><a class="tournee " href="/la-tournee"><span class="inner">Tournée<span class="icon general-sprite"></span></span></a></li>          </ul>
+        </div>
+      </div>
+      
+      <div id="mm4-main">
+
+                <div class="cboth"></div>
+
+        
+          <div id="mm4-left">
+            <div class="inner-mobile">
+                
+              
+
+     
+        <div class="blue-vote video">
+  <h2>Le verdict avec Olivier Dion</h2>
+  <div class="inner">
+    	<p>Découvre qui sont les deux gagnants de mi-saison!</p>
+            
+                
+                              
+                  
+                              
+      <a href="#" class="player-thumb js-finalist-video js-shared-video trans-03s" data-share="true" data-video_id="3472741422001" data-name="" data-excerpt="" data-url="http://mixmania.vrak.tv/les-videos?id=11337" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/xqo5k3rmh7c7q/facebook_thumb.jpg?v=81d4d78e63a202ea156261cc1b7c0302" data-share_title="Mix 4 | Vidéos | Le verdict avec Olivier Dion" data-share_text="" data-twitter_text="Mix+4+%7C+Vid%C3%A9os+%7C Le verdict avec Olivier Dion" data-ga_title=>
+          
+      <img src="http://d2mk5i7ts1yn8z.cloudfront.net/xqo5k3rmh7c7q/home_thumb.jpg?v=81d4d78e63a202ea156261cc1b7c0302" width="527" />
+      
+      
+            <span class="week">Semaine 5</span>
+            <span class="play vote-sprite trans-03s big"></span>
+    </a>
+        
+    <div class="splash"></div>
+    <div class="clear"></div>
+  </div>
+  <div class="shadow"></div>
+</div>
+  
+<h2 class="actu-title">Dernières actualités</h2>
+
+<div class="listing-news js-listing-news">
+  
+  
+    <div class="news-item">
+    <div class="thumb fleft">
+                  <img src="http://d2mk5i7ts1yn8z.cloudfront.net/j5p2cnjv6ey1q/facebook_thumb.png?v=53b84e9877acf188acec4485c6573058" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                                  Mixagram - James mange des affaires weird
+                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="503" data-type="HeapAtom"></span>
+          <span class="js-like-count">30</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                
+                                                                        
+                                                            
+          <a href="#" class="player-thumb js-finalist-video js-shared-video trans-03s" data-share="true" data-video_id="3475254228001" data-name="Mixagram - James mange des affaires weird" data-excerpt="" data-item_id="503" data-like_count="30" data-url="http://mixmania.vrak.tv/les-videos?id=503" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/j5p2cnjv6ey1q/facebook_thumb.png?v=53b84e9877acf188acec4485c6573058" data-share_title="Mix 4 | Vidéos" data-share_text="&Agrave; la demande g&eacute;n&eacute;rale, voici une vid&eacute;o d&amp;#8217;une recette super originale que j&amp;#8217;ai invent&eacute;e!" data-twitter_text="Mix+4+%7C+Vid%C3%A9os+	À la demande générale, voici une vidéo..." data-ga_title=Mixagram - James mange des affaires weird>
+            
+            <img src="http://d2mk5i7ts1yn8z.cloudfront.net/af0kg5oik74uf/home_thumb.jpg?v=e196fe2688da9267df5f25e4e2240ee9" width="508">
+            <span class="play vote-sprite trans-03s"></span>
+          </a>
+        
+                <div class="text-wrapper">
+          	<p>À la demande générale, voici une vidéo d&#8217;une recette super originale que j&#8217;ai inventée!</p>
+        </div>
+        
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 3 heures</div>
+    <div class="clear"></div>
+  </div>
+  <div class="news-item">
+    <div class="thumb fleft">
+                  <img src="http://d2mk5i7ts1yn8z.cloudfront.net/rk680v5kie2u0/facebook_thumb.png?v=a150ad85061e6ea09515a185057ce56f" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                      Marie-Catherine                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="497" data-type="HeapAtom"></span>
+          <span class="js-like-count">209</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                      <img src="http://d2mk5i7ts1yn8z.cloudfront.net/0ehd15s1ldp7v/home_thumb.jpg?v=711ddfe00a64667f12c14808b9c53922" width="508">
+                  
+                <div class="text-wrapper">
+          	<p>On travaille fort en studio pour vous offrir une perfo de la <span class="caps">MORT</span> demain!</p>
+        </div>
+        
+                <div class="news-hover trans-03s">
+          <div class="table">
+            <div class="cell">
+                                                                      
+                                                          
+                                                          
+                                                                      
+              <div class="share-block light">
+  
+  <div class="label fleft">Partage</div>  
+    
+    
+    
+    
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://mixmania.vrak.tv/mixagram?id=497" class="fb-icon icon fleft vote-sprite not-external trans-03s js-fb-share" target="_blank" data-url="http://mixmania.vrak.tv/mixagram?id=497" data-share_text="On travaille fort en studio pour vous offrir une perfo de la MORT demain!" data-share_title="Mix 4 | Mixagram | Marie-Catherine a publié" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/0ehd15s1ldp7v/home_thumb.jpg?v=711ddfe00a64667f12c14808b9c53922" data-ga_section="Nouvelles" data-ga_title="On travaille fort en studio pour vous offrir une perfo de la MORT demain!">Facebook</a>
+  
+  <a href="http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=497&text=Mix+4+%7C+Marie-Catherine+a+publi%C3%A9+%7C+	On travaille fort en studio pour vous..." class="tw-icon icon fleft vote-sprite not-external trans-03s" target="_blank" onclick="window.open('http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=497&text=Mix+4+%7C+Marie-Catherine+a+publi%C3%A9+%7C+	On travaille fort en studio pour vous...','popup','width=570,height=300,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=no,menubar=no,status=no,left=50,top=0'); return false" data-ga_section="Nouvelles" data-ga_title="On travaille fort en studio pour vous offrir une perfo de la MORT demain!">Twitter</a>
+
+  <span class="clear"></span>
+</div>            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 6 heures</div>
+    <div class="clear"></div>
+  </div>
+  <div class="news-item">
+    <div class="thumb fleft">
+                                        <img src="http://mixmania.vrak.tv/mm4/static/images/phase7/mix4_thumb.jpg" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                                  Le verdict avec Olivier Dion
+                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="477" data-type="HeapAtom"></span>
+          <span class="js-like-count">309</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                
+                                                                        
+                                                            
+          <a href="#" class="player-thumb js-finalist-video js-shared-video trans-03s" data-share="true" data-video_id="3472741422001" data-name="Le verdict avec Olivier Dion" data-excerpt="" data-item_id="477" data-like_count="309" data-url="http://mixmania.vrak.tv/les-videos?id=477" data-share_image="" data-share_title="Mix 4 | Vidéos" data-share_text="Cette semaine, le vote du public comptait pour 100% de la note. Olivier d&eacute;voile le r&eacute;sultat de ce vote et on d&eacute;couvre qui sera le gagnant chanteur et le gagnant danseur de mi-saison." data-twitter_text="Mix+4+%7C+Vid%C3%A9os+	Cette semaine, le vote du public comptait..." data-ga_title=Le verdict avec Olivier Dion>
+            
+            <img src="http://d2mk5i7ts1yn8z.cloudfront.net/xqo5k3rmh7c7q/home_thumb.jpg?v=81d4d78e63a202ea156261cc1b7c0302" width="508">
+            <span class="play vote-sprite trans-03s"></span>
+          </a>
+        
+                <div class="text-wrapper">
+          	<p>Cette semaine, le vote du public comptait pour 100% de la note. Olivier dévoile le résultat de ce vote et on découvre qui sera le gagnant chanteur et le gagnant danseur de mi-saison.</p>
+        </div>
+        
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 19 heures</div>
+    <div class="clear"></div>
+  </div>
+  <div class="news-item">
+    <div class="thumb fleft">
+                                        <img src="http://mixmania.vrak.tv/mm4/static/images/phase7/mix4_thumb.jpg" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                      MIX 4                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="502" data-type="HeapAtom"></span>
+          <span class="js-like-count">1562</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                      <img src="http://d2mk5i7ts1yn8z.cloudfront.net/wf4fb3onooggc/home_thumb.jpg?v=05de85b1294a30a085e228fe72791610" width="508">
+                  
+                <div class="text-wrapper">
+          	<p>As-tu hâte au Verdict couronnant les gagnants de mi-parcours? C&#8217;est dans 30 minutes, manque pas ça!</p>
+        </div>
+        
+                <div class="news-hover trans-03s">
+          <div class="table">
+            <div class="cell">
+                                                                      
+                                                          
+                                                          
+                                                                      
+              <div class="share-block light">
+  
+  <div class="label fleft">Partage</div>  
+    
+    
+    
+    
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://mixmania.vrak.tv/mixagram?id=502" class="fb-icon icon fleft vote-sprite not-external trans-03s js-fb-share" target="_blank" data-url="http://mixmania.vrak.tv/mixagram?id=502" data-share_text="As-tu h&acirc;te au Verdict couronnant les gagnants de mi-parcours? C&amp;#8217;est dans 30 minutes, manque pas &ccedil;a!" data-share_title="Mix 4 | Mixagram | MIX 4 a publié" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/wf4fb3onooggc/home_thumb.jpg?v=05de85b1294a30a085e228fe72791610" data-ga_section="Nouvelles" data-ga_title="As-tu hâte au Verdict couronnant les gagnants de mi-parcours? C'est dans 30 minutes, manque pas ça!">Facebook</a>
+  
+  <a href="http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=502&text=Mix+4+%7C+MIX+4+a+publi%C3%A9+%7C+	As-tu hâte au Verdict couronnant les..." class="tw-icon icon fleft vote-sprite not-external trans-03s" target="_blank" onclick="window.open('http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=502&text=Mix+4+%7C+MIX+4+a+publi%C3%A9+%7C+	As-tu hâte au Verdict couronnant les...','popup','width=570,height=300,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=no,menubar=no,status=no,left=50,top=0'); return false" data-ga_section="Nouvelles" data-ga_title="As-tu hâte au Verdict couronnant les gagnants de mi-parcours? C'est dans 30 minutes, manque pas ça!">Twitter</a>
+
+  <span class="clear"></span>
+</div>            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 20 heures</div>
+    <div class="clear"></div>
+  </div>
+  <div class="news-item">
+    <div class="thumb fleft">
+                  <img src="http://d2mk5i7ts1yn8z.cloudfront.net/mo0vxreqppxlg/facebook_thumb.png?v=fcaebf6fa5b307c22f69b7e94cbee80d" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                      Kiève                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="491" data-type="HeapAtom"></span>
+          <span class="js-like-count">1726</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                      <img src="http://d2mk5i7ts1yn8z.cloudfront.net/m7qsunr8kocm5/home_thumb.jpg?v=9a4afd9c77baed7c1c315d9427edf587" width="508">
+                  
+                <div class="text-wrapper">
+          	<p>On a vraiment ri tout le long. Merci Étienne!!!</p>
+        </div>
+        
+                <div class="news-hover trans-03s">
+          <div class="table">
+            <div class="cell">
+                                                                      
+                                                          
+                                                          
+                                                                      
+              <div class="share-block light">
+  
+  <div class="label fleft">Partage</div>  
+    
+    
+    
+    
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://mixmania.vrak.tv/mixagram?id=491" class="fb-icon icon fleft vote-sprite not-external trans-03s js-fb-share" target="_blank" data-url="http://mixmania.vrak.tv/mixagram?id=491" data-share_text="On a vraiment ri tout le long. Merci &Eacute;tienne!!!" data-share_title="Mix 4 | Mixagram | Kiève a publié" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/m7qsunr8kocm5/home_thumb.jpg?v=9a4afd9c77baed7c1c315d9427edf587" data-ga_section="Nouvelles" data-ga_title="On a vraiment ri tout le long, Merci Étienne!!!">Facebook</a>
+  
+  <a href="http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=491&text=Mix+4+%7C+Ki%C3%A8ve+a+publi%C3%A9+%7C+	On a vraiment ri tout le long. Merci..." class="tw-icon icon fleft vote-sprite not-external trans-03s" target="_blank" onclick="window.open('http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=491&text=Mix+4+%7C+Ki%C3%A8ve+a+publi%C3%A9+%7C+	On a vraiment ri tout le long. Merci...','popup','width=570,height=300,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=no,menubar=no,status=no,left=50,top=0'); return false" data-ga_section="Nouvelles" data-ga_title="On a vraiment ri tout le long, Merci Étienne!!!">Twitter</a>
+
+  <span class="clear"></span>
+</div>            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 21 heures</div>
+    <div class="clear"></div>
+  </div>
+  <div class="news-item">
+    <div class="thumb fleft">
+                  <img src="http://d2mk5i7ts1yn8z.cloudfront.net/j5p2cnjv6ey1q/facebook_thumb.png?v=53b84e9877acf188acec4485c6573058" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                      James                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="490" data-type="HeapAtom"></span>
+          <span class="js-like-count">1799</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                      <img src="http://d2mk5i7ts1yn8z.cloudfront.net/8jun8t4egeq1v/home_thumb.jpg?v=eea99e6305a0c63e713abaae33e84da2" width="508">
+                  
+                <div class="text-wrapper">
+          	<p>Au spectacle de l&#8217;humoriste Étienne Dano, on a hâte de rire!!</p>
+        </div>
+        
+                <div class="news-hover trans-03s">
+          <div class="table">
+            <div class="cell">
+                                                                      
+                                                          
+                                                          
+                                                                      
+              <div class="share-block light">
+  
+  <div class="label fleft">Partage</div>  
+    
+    
+    
+    
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://mixmania.vrak.tv/mixagram?id=490" class="fb-icon icon fleft vote-sprite not-external trans-03s js-fb-share" target="_blank" data-url="http://mixmania.vrak.tv/mixagram?id=490" data-share_text="Au spectacle de l&amp;#8217;humoriste &Eacute;tienne Dano, on a h&acirc;te de rire!!" data-share_title="Mix 4 | Mixagram | James a publié" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/8jun8t4egeq1v/home_thumb.jpg?v=eea99e6305a0c63e713abaae33e84da2" data-ga_section="Nouvelles" data-ga_title="Au spectacle de l'humoriste Étienne Dano, on a hâte de rire!!">Facebook</a>
+  
+  <a href="http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=490&text=Mix+4+%7C+James+a+publi%C3%A9+%7C+	Au spectacle de l&#8217;humoriste Étienne..." class="tw-icon icon fleft vote-sprite not-external trans-03s" target="_blank" onclick="window.open('http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=490&text=Mix+4+%7C+James+a+publi%C3%A9+%7C+	Au spectacle de l&#8217;humoriste Étienne...','popup','width=570,height=300,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=no,menubar=no,status=no,left=50,top=0'); return false" data-ga_section="Nouvelles" data-ga_title="Au spectacle de l'humoriste Étienne Dano, on a hâte de rire!!">Twitter</a>
+
+  <span class="clear"></span>
+</div>            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 22 heures</div>
+    <div class="clear"></div>
+  </div>
+  <div class="news-item">
+    <div class="thumb fleft">
+                  <img src="http://d2mk5i7ts1yn8z.cloudfront.net/1x95nzyj0268b/facebook_thumb.png?v=30cafd821de0376c61638586d60d6ba5" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                                  Mixagram - concert privé de Raph et Krystel
+                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="493" data-type="HeapAtom"></span>
+          <span class="js-like-count">395</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                
+                                                                        
+                                                            
+          <a href="#" class="player-thumb js-finalist-video js-shared-video trans-03s" data-share="true" data-video_id="3465821870001" data-name="Mixagram - concert privé de Raph et Krystel" data-excerpt="" data-item_id="493" data-like_count="395" data-url="http://mixmania.vrak.tv/les-videos?id=493" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/1x95nzyj0268b/facebook_thumb.png?v=30cafd821de0376c61638586d60d6ba5" data-share_title="Mix 4 | Vidéos" data-share_text="Douce chanson d&amp;#8217;apr&egrave;s-midi de Raph et moi, juste pour vous!" data-twitter_text="Mix+4+%7C+Vid%C3%A9os+	Douce chanson d&#8217;après-midi de Raph et..." data-ga_title=Mixagram - concert privé de Raph et Krystel>
+            
+            <img src="http://d2mk5i7ts1yn8z.cloudfront.net/gogke7dp7djvv/home_thumb.png?v=846fb7133f578559001245bb34536677" width="508">
+            <span class="play vote-sprite trans-03s"></span>
+          </a>
+        
+                <div class="text-wrapper">
+          	<p>Douce chanson d&#8217;après-midi de Raph et moi, juste pour vous!</p>
+        </div>
+        
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 1 jour</div>
+    <div class="clear"></div>
+  </div>
+  <div class="news-item">
+    <div class="thumb fleft">
+                  <img src="http://d2mk5i7ts1yn8z.cloudfront.net/7ch40upij27po/facebook_thumb.png?v=2025e4dab236ad1b411356fe6914dbf9" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                      Alexandra                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="489" data-type="HeapAtom"></span>
+          <span class="js-like-count">2138</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                      <img src="http://d2mk5i7ts1yn8z.cloudfront.net/fciezklb6oeko/home_thumb.jpg?v=9f4c24f1c3c0c8a8bd60be0979ad555f" width="508">
+                  
+                <div class="text-wrapper">
+          	<p>Votre soupe poulet et nouilles (miam) est trop chaude (ouch!)? Mettez-y de la glace (eurêka!)</p>
+        </div>
+        
+                <div class="news-hover trans-03s">
+          <div class="table">
+            <div class="cell">
+                                                                      
+                                                          
+                                                          
+                                                                      
+              <div class="share-block light">
+  
+  <div class="label fleft">Partage</div>  
+    
+    
+    
+    
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://mixmania.vrak.tv/mixagram?id=489" class="fb-icon icon fleft vote-sprite not-external trans-03s js-fb-share" target="_blank" data-url="http://mixmania.vrak.tv/mixagram?id=489" data-share_text="Votre soupe poulet et nouilles (miam) est trop chaude (ouch!)? Mettez-y de la glace (eur&ecirc;ka!)" data-share_title="Mix 4 | Mixagram | Alexandra a publié" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/fciezklb6oeko/home_thumb.jpg?v=9f4c24f1c3c0c8a8bd60be0979ad555f" data-ga_section="Nouvelles" data-ga_title="Votre soupe poulet et nouille (miam) est trop chaude (ouch!), mettez-y de la glace (eureka!)">Facebook</a>
+  
+  <a href="http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=489&text=Mix+4+%7C+Alexandra+a+publi%C3%A9+%7C+	Votre soupe poulet et nouilles (miam) est..." class="tw-icon icon fleft vote-sprite not-external trans-03s" target="_blank" onclick="window.open('http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=489&text=Mix+4+%7C+Alexandra+a+publi%C3%A9+%7C+	Votre soupe poulet et nouilles (miam) est...','popup','width=570,height=300,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=no,menubar=no,status=no,left=50,top=0'); return false" data-ga_section="Nouvelles" data-ga_title="Votre soupe poulet et nouille (miam) est trop chaude (ouch!), mettez-y de la glace (eureka!)">Twitter</a>
+
+  <span class="clear"></span>
+</div>            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 1 jour</div>
+    <div class="clear"></div>
+  </div>
+  <div class="news-item">
+    <div class="thumb fleft">
+                  <img src="http://d2mk5i7ts1yn8z.cloudfront.net/lh3eunvjltf3a/facebook_thumb.png?v=bdfe46be4aba47aca824d415af7c5c49" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                      Megan                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="488" data-type="HeapAtom"></span>
+          <span class="js-like-count">1927</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                      <img src="http://d2mk5i7ts1yn8z.cloudfront.net/6gnootvrdp2yb/home_thumb.jpg?v=eea99e6305a0c63e713abaae33e84da2" width="508">
+                  
+                <div class="text-wrapper">
+          	<p>On pratique notre nouvelle chorégraphie avec Kim Gingras et sa sœur! Leggings aux couleurs électriques sont au rendez-vous!</p>
+        </div>
+        
+                <div class="news-hover trans-03s">
+          <div class="table">
+            <div class="cell">
+                                                                      
+                                                          
+                                                          
+                                                                      
+              <div class="share-block light">
+  
+  <div class="label fleft">Partage</div>  
+    
+    
+    
+    
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://mixmania.vrak.tv/mixagram?id=488" class="fb-icon icon fleft vote-sprite not-external trans-03s js-fb-share" target="_blank" data-url="http://mixmania.vrak.tv/mixagram?id=488" data-share_text="On pratique notre nouvelle chor&eacute;graphie avec Kim Gingras et sa s&oelig;ur! Leggings aux couleurs &eacute;lectriques sont au rendez-vous!" data-share_title="Mix 4 | Mixagram | Megan a publié" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/6gnootvrdp2yb/home_thumb.jpg?v=eea99e6305a0c63e713abaae33e84da2" data-ga_section="Nouvelles" data-ga_title="On pratique notre nouvelle chorégraphie avec Kim Gingras et sa sœur! Leggings électriques au rendez-vous!">Facebook</a>
+  
+  <a href="http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=488&text=Mix+4+%7C+Megan+a+publi%C3%A9+%7C+	On pratique notre nouvelle chorégraphie..." class="tw-icon icon fleft vote-sprite not-external trans-03s" target="_blank" onclick="window.open('http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=488&text=Mix+4+%7C+Megan+a+publi%C3%A9+%7C+	On pratique notre nouvelle chorégraphie...','popup','width=570,height=300,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=no,menubar=no,status=no,left=50,top=0'); return false" data-ga_section="Nouvelles" data-ga_title="On pratique notre nouvelle chorégraphie avec Kim Gingras et sa sœur! Leggings électriques au rendez-vous!">Twitter</a>
+
+  <span class="clear"></span>
+</div>            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 1 jour</div>
+    <div class="clear"></div>
+  </div>
+  <div class="news-item">
+    <div class="thumb fleft">
+                  <img src="http://d2mk5i7ts1yn8z.cloudfront.net/zjzwtzzx7yeak/facebook_thumb.png?v=f1a8d8ef826e1951ca428f80805fa8d6" width="75" height="75" />
+    </div>
+    <div class="right">
+      <div class="top">
+        <div class="name">
+                      Anouk                  </div>
+
+        <div class="likes">
+          <span class="icon general-sprite js-like" data-id="487" data-type="HeapAtom"></span>
+          <span class="js-like-count">1729</span>
+        </div>
+
+      </div>
+      <div class="news-item-content">
+                                      <img src="http://d2mk5i7ts1yn8z.cloudfront.net/aspmtw54icbsq/home_thumb.jpg?v=eea99e6305a0c63e713abaae33e84da2" width="508">
+                  
+                <div class="text-wrapper">
+          	<p>Séance de relaxation entre des travaux et des devoirs! Ahhhuuuuuum</p>
+        </div>
+        
+                <div class="news-hover trans-03s">
+          <div class="table">
+            <div class="cell">
+                                                                      
+                                                          
+                                                          
+                                                                      
+              <div class="share-block light">
+  
+  <div class="label fleft">Partage</div>  
+    
+    
+    
+    
+  <a href="https://www.facebook.com/sharer/sharer.php?u=http://mixmania.vrak.tv/mixagram?id=487" class="fb-icon icon fleft vote-sprite not-external trans-03s js-fb-share" target="_blank" data-url="http://mixmania.vrak.tv/mixagram?id=487" data-share_text="S&eacute;ance de relaxation entre des travaux et des devoirs! Ahhhuuuuuum" data-share_title="Mix 4 | Mixagram | Anouk a publié" data-share_image="http://d2mk5i7ts1yn8z.cloudfront.net/aspmtw54icbsq/home_thumb.jpg?v=eea99e6305a0c63e713abaae33e84da2" data-ga_section="Nouvelles" data-ga_title="Séance de relaxation entre des travaux et des devoirs! Ahhhuuuuuum">Facebook</a>
+  
+  <a href="http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=487&text=Mix+4+%7C+Anouk+a+publi%C3%A9+%7C+	Séance de relaxation entre des travaux et..." class="tw-icon icon fleft vote-sprite not-external trans-03s" target="_blank" onclick="window.open('http://twitter.com/share?url=http://mixmania.vrak.tv/mixagram?id=487&text=Mix+4+%7C+Anouk+a+publi%C3%A9+%7C+	Séance de relaxation entre des travaux et...','popup','width=570,height=300,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=no,menubar=no,status=no,left=50,top=0'); return false" data-ga_section="Nouvelles" data-ga_title="Séance de relaxation entre des travaux et des devoirs! Ahhhuuuuuum">Twitter</a>
+
+  <span class="clear"></span>
+</div>            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="time-ago">Il y a 1 jour</div>
+    <div class="clear"></div>
+  </div>
+
+  
+</div>
+
+    <div class="plus-publications">
+    <a href="#" class="trans-03s js-load-more" data-next_page="2">
+      PLUS DE PUBLICATIONS
+      <span class="icon general-sprite"></span>
+    </a>
+  </div>
+    
+
+
+            </div>
+          </div>
+        
+
+        
+          <div id="mm4-right">
+            <div class="inner-mobile">
+              <div id="zone-right">
+            <div class="block mobile-hidden js-TuileCommaditaire">
+    <a href="http://pubads.g.doubleclick.net/gampad/clk?id=168656409&amp;iu=/3826/sri.vrak/clicktrack">
+      <img src="http://d2mk5i7ts1yn8z.cloudfront.net/hh331f4yf26d0/source.jpg?v=8244ba7c45842b0c4a1c82f0cb2b0099" />
+    </a>
+  </div>
+    
+
+      <div class="block appstore ">
+  <div class="inner">
+    <h2>Application</h2>
+    <p>Rends-toi sur l'application pour chanter, danser et donner ton opinion sur les Mix pendant l'émission.</p>
+    <h3><a href="https://itunes.apple.com/ca/app/mixmania-3/id515336247?mt=8">Télécharge-la dès maintenant</a></h3>
+    <a href="https://itunes.apple.com/ca/app/mixmania-3/id515336247?mt=8" class="app-btn general-sprite js-BlocApplicationMobile" target="_blank">Disponible sur appstore</a>
+  </div>
+  <div class="shadow"></div>
+  <div class="splash"></div>
+  <div class="iphone"></div>
+</div>  
+
+        <div class="block news mixpop">
+        <h2 class="title">Question MIX POP</h2>
+    
+    <div class="mixpop-item js-mixpop-item cat-perfo trans-03s voted show-info">
+      <div class="default-view js-default-view">
+        <h2>Avec qui aimerais-tu chanter en duo?</h2>
+      </div>
+      <a href="/mix-pop?id=23"></a>
+      <div class="splash"></div>
+      <div class="shadow"></div>
+    </div>
+    
+  </div>
+  
+</div>            </div>
+          </div>
+        
+        <div class="cboth"></div>
+      </div>
+      
+      <div id="mm4-footer" class="">
+  
+  <div class="footer-shadow"></div>
+  
+  <div class="center margin-top20" id="credits_conditions">
+    <a href="/credits" class="trans-01s">Crédits</a> | <a href="/termes-et-conditions" class="trans-01s">Conditions d'utilisation</a> | <a href="/faq" class="trans-01s">FAQ</a>
+  </div>
+  
+  <div id="producers">
+    <div class="cboth"></div>
+    <span class="mobile-only label">Produit par:</span>
+    <a class="trans-02s" target="_blank" href="http://www.zone3.ca/" id="zone-3"></a>
+    <a class="trans-02s" target="_blank" href="http://www.turbulent.ca" id="turbulent"></a>
+
+    <div class="cboth mobile-only"></div>
+    <span class="mobile-only label">Avec la participation<br />financiere de:</span>
+<a class="trans-02s" target="_blank" href="http://fondsbell.ca/" id="fonds-bell"></a>
+    <a class="trans-02s" target="_blank" href="http://www.fondsquebecor.ca/index.php?lang=fr" id="fonds-quebecor"></a>
+    <div class="cboth mobile-only"></div>
+    <a class="trans-02s" target="_blank" href="http://www.cmf-fmc.ca/fr/index.php?&amp;page_mode=connect" id="cmf-fmc"></a>
+    <a class="trans-02s" target="_blank" href="http://www.vrak.tv" id="vrak"></a>
+    <div class="cboth"></div>
+  </div>
+  
+</div>
+      
+    </div>
+    
+                            
+        <footer class="main">
+    <hr class="hidden" />
+    <div id="siteFooter">
+        <nav>
+            <ul class="x4col">
+                <li class="first col">
+                    <h3>Sur ton site</h3>
+                    <ul class="x2col">
+                        <li class="first col">
+                            <ul class="link">
+                                <li><a href="http://www.vrak.tv/emissions">Émissions</a></li>
+                                <li><a href="http://www.vrak.tv/horaire">Horaire</a></li>
+                                <li><a href="http://www.vrak.tv/section-stars">Section Stars</a></li>
+                                <li><a href="http://www.vrak.tv/miss-vrak">Miss VRAK</a></li>
+                                <li><a href="http://www.vrak.tv/blogue">Blogue</a></li>
+                                <li><a href="http://www.vrak.tv/salle-de-jeux">Salle de jeux</a></li>
+                            </ul>
+                        </li>
+                        <li class="col">
+                            <ul class="link">
+                                <li><a href="http://www.vrak.tv/videos-vrak-tv">Vidéos VRAK.TV</a></li>
+                                <li><a href="http://www.vrak.tv/concours">Concours</a></li>
+                                <li><a href="http://forums.vrak.tv/">Forums</a></li>
+                                <li><a href="http://www.vrak.tv/section-stars/clavardages">Clavardages</a></li>
+                                <li><a href="http://www.vrak.tv/faq">FAQ</a></li>
+                                <li><a href="http://www.vrak.tv/nous-joindre">Nous joindre</a></li>
+                            </ul>
+                        </li>
+                    </ul><!-- /.x2col -->
+                </li>
+                <li class="col">
+                    <h3><a href="http://www.vrak.tv/emissions">Émissions</a></h3>
+                    <ul class="x2col">
+                        <li class="first col">
+                            <ul class="link">
+                                <li><a href="http://www.vrak.tv/emissions/6ne-1.1379698">6né</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/arrangetoi-avec-ca-1.1379651">Arrange-toi avec ça</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/fan-club-1.1379632">Fan Club</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/fee-eric-1.1379633">Fée Éric</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/glee-1.1379637">Glee</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/il-etait-une-fois-dans-le-trouble-1.1379236">Il était une fois</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/jessie-1.1379618">Jessie</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/l-appart-du-5e-1.1379649">L'appart du 5ème</a></li>
+                            </ul>
+                        </li>
+                        <li class="col">
+                            <ul class="link">
+                                <li><a href="http://www.vrak.tv/emissions/les-testeurs-1.1379631">Les testeurs</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/le-studio-1.1379706">Le Studio</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/sam-cat-1.1379709">Sam &amp; Cat</a></li>
+                                <li><a href="http://www.vrak.tv/emissions/vie-de-banlieue-1.1379586">Vie de banlieue</a></li>
+                                <li><a href="http://www.vrak.tv/vrak-la-vie-1.1379626">VRAK la vie</a></li>
+                            </ul>
+                        </li>
+                    </ul><!-- /.x2col -->
+                </li>
+                <li class="col colSmall">
+                    <h3>En vedette</h3>
+                    <ul class="link">
+                        <li><a href="http://www.vrak.tv/emissions/karv-l-anti-gala-2013-1.1379183">KARV, l'anti.gala</a></li>
+                        <li><a href="http://www.vrak.tv/emissions/meilleur-avant-le-31-bon-pareil-le-1er-1.1379650">Meilleur avant le 31, bon pareil le 1er</a></li>
+                        <li><a href="http://www.vrak.tv/emissions/mix-4-1.1379397">Mix 4</a></li>
+                    </ul>
+                </li>
+                <li class="col colSmall">
+                    <h3>Espionne VRAK.TV!</h3>
+                    <ul class="link">
+                        <li><a class="socialIcon" href="http://www.facebook.com/vraktv" title="Nous suivre sur Facebook"><span class="ico facebook"></span>Facebook</a></li>
+                        <li><a class="socialIcon" href="http://www.twitter.com/vraktv" title="Nous suivre sur Twitter"><span class="ico twitter"></span>Twitter</a></li>
+                        <li><a class="socialIcon" href="http://www.instagram.com/vraktv" title="Nous suivre sur Instagram"><span class="ico instagram"></span>Instagram</a></li>
+                    </ul>
+                </li>
+            </ul><!-- /.x4col -->
+        </nav>
+    </div><!-- /#siteFooter -->
+    <div id="corpoFooterJS"><script id="footerJS" div-type="television" theme-class="whiteFooter" src="http://footers.astralmedia.com/AST011/js/footer/footer-fr.js" type="text/javascript"></script></div><!-- /#astralCorpoFooterJS -->
+</footer><!-- /footer.main -->
+
+<!-- ====== 0.1 splash page 12-13 ====== 
+<div class="splashPage hidden" id="ageSelect" style="min-height:4200px; display: none;">
+    <img class="splashBackgroundImg" src="http://mixmania.vrak.tv/img/vrak/splashPage/splashBackground-0.jpg" alt=""/>
+
+    <div class="splashContent">
+        <noscript><span><i></i> Ce site requiert l'<a href="https://www.google.ca/search?q=Comment+activer+le+javascript&safe=active&&tbs=lr:lang_1fr&lr=lang_fr" target="google" title="Recherche sur Google.ca &laquo; Comment activer le JavaScript &raquo;">activation du JavaScript</a> dans les préférences de ton navigateur</span></noscript>
+        <div class="splashLogo"></div>
+        <h2><span class="ageText">Tu as :</span> <a id="age12" class="ageOptionBtn" title="12 ans et moins"><span>12 ans et moins</span></a> <span class="ageSplitter">ou</span> <a id="age13" class="ageOptionBtn" title="13 ans et plus"><span>13 ans et plus</span></a></h2>
+    </div>
+</div><!-- /#age12vs13.splashPage -->
+
+<!-- ===== MAIN SCRIPTS =====  -->
+<!-- tracking google analytics -->
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    try {
+        var pageTracker = _gat._getTracker("UA-368713-4");
+        pageTracker._setDomainName(".vrak.tv");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
+
+<!-- SiteCatalyst code version: H.25.4. Copyright 1996-2011 Adobe, Inc. All Rights Reserved. More info available at http://www.omniture.com -->
+<script type="text/javascript"  src="http://mixmania.vrak.tv/js/astral/s_code_external.js" ></script>
+<script type="text/javascript"  src="http://mixmania.vrak.tv/js/astral/s_code.js" ></script>
+<!-- End SiteCatalyst code version: H.25.4. -->
+
+<!-- tracking comscore -->
+<script>
+    document.write(unescape("%3Cscript src='" + (document.location.protocol == "https:" ? "https://sb" : "http://b")
+            + ".scorecardresearch.com/beacon.js' %3E%3C/script%3E"));
+</script>
+<script>
+    COMSCORE.beacon({
+        c1:2,
+        c2:"3000024",
+        c3:"",
+        c4:"",
+        c5:"",
+        c6:"",
+        c15:""
+    });
+</script>
+<noscript>
+    <img src="http://b.scorecardresearch.com/p?c1=2&c2=3000024&c3=&c4=&c5=&c6=&c15=&cj=1" alt="" />
+</noscript>
+
+
+                      
+    <script id="tpl_brightcove_video" type="text/x-jsmart-tmpl"><!-- Start of Brightcove Player -->
+<object class="BrightcoveExperience">
+  <param name="bgcolor" value="#FFFFFF" />
+  <param name="width" value="612" />
+  <param name="height" value="344" />
+  <param name="playerID" value="1469722004001" />
+  <param name="playerKey" value="AQ~~,AAABQuUYtRk~,TH7WVzoQgmdx4tHuEDwzigrVovkPmrmg" />
+  <param name="isVid" value="true" />
+  <param name="isUI" value="true" />
+  <param name="dynamicStreaming" value="true" />
+  <!-- params for Universal Player API -->
+  <param name="includeAPI" value="true" />
+  <param name="templateReadyHandler" value="BCL.onTemplateReady" />
+  <param name="wmode" value="opaque" />
+
+  <param name="@videoPlayer" value="{$video_id}" />
+</object>
+<!-- End of Brightcove Player -->
+</script>
+    <script id="tpl_not_optimized" type="text/x-jsmart-tmpl"><img src="http://mixmania.vrak.tv/mm4/static/images/inscription_logo.png" />
+<p>Ce site est optimisé pour Firefox, Google Chrome et Internet Explorer 9 et plus.</p>
+
+<p><a href="http://windows.microsoft.com/fr-ca/internet-explorer/download-ie" target="_blank">Mettre à jour votre version d'Internet Explorer</a><br />
+<a href="http://www.mozilla.org/fr/firefox/new/" target="_blank">Télécharger gratuitement Firefox</a><br />
+<a href="http://www.google.ca/intl/fr/chrome/browser/" target="_blank">Télécharger gratuitement Chrome</a></p>
+
+<p>Merci et bonne visite!</p></script>
+    <script id="tpl_vote_connect" type="text/x-jsmart-tmpl"><div id="vote-connect-box">
+  <div class="section select-method js-select-method">
+	<h2>Tu dois t’identifier pour envoyer ton vote</h2>
+	<div class="general-btn trans-03s  to-white not-external display-table js-go-to-vrak-login">
+  <a href="#" class="not-external trans-03s " target="">
+    <span class="hover trans-03s"></span>
+    <span class="label">
+      <span class="cell">JE SUIS MEMBRE DE VRAK.TV</span>
+    </span>
+  </a>
+  
+  </div>
+	<div class="general-btn trans-03s  to-white not-external display-table js-go-to-vrak-signup">
+  <a href="/vote" class="not-external trans-03s js-vrak-signup-trigger" target="">
+    <span class="hover trans-03s"></span>
+    <span class="label">
+      <span class="cell">JE VEUX DEVENIR MEMBRE DE VRAK.TV</span>
+    </span>
+  </a>
+  
+  </div>
+	<div class="general-btn trans-03s  to-white not-external display-table js-go-to-method-email">
+  <a href="/vote" class="not-external trans-03s " target="">
+    <span class="hover trans-03s"></span>
+    <span class="label">
+      <span class="cell">JE NE SUIS PAS MEMBRE DE VRAK.TV, MAIS JE VEUX VOTER</span>
+    </span>
+  </a>
+  
+  </div>
+  </div>
+  <div class="section method-email js-method-email">
+	<h2>Comme tu n’es pas membre de Vrak.tv,<br />complète les informations suivantes :</h2>
+	<form method="POST" action="">
+	  <div class="left-col fleft">
+		<p>Inscris ton adresse courriel afin que ton vote soit enregistré</p>
+		<p>Vrak.tv doit valider que ton vote n'est pas robotisé,<br />clique sur l'image <strong></strong>, puis sur le bouton<br />Soumettre afin d'envoyer ton vote.</p>
+	  </div>
+	  <div class="right-col fleft">
+		<div class="fleft">
+		  <label>Courriel</label>
+		  <input type="text" name="courriel" class="js-form-data" />
+		</div>
+		<div class="fleft">
+		</div>
+		<span class="clear"></span>
+		<div class="captcha-wrapper">
+		  		  <input type="hidden" name="captcha" class="js-form-data js-input-captcha" />
+		  <span class="clear"></span>
+		</div>
+	  </div>
+	  <span class="clear"></span>
+	  <div class="submit-wrapper">
+		<div class="general-btn trans-03s  centered not-external small display-table to-white js-captcha-submit">
+  <a href="/vote" class="not-external trans-03s " target="">
+    <span class="hover trans-03s"></span>
+    <span class="label">
+      <span class="cell">Soumettre</span>
+    </span>
+  </a>
+  
+    <div class="error-red-box js-error-red-box trans-03s">
+    <div class="inner">
+      
+    </div>
+    <div class="arrow vote-sprite"></div>
+  </div>
+  </div>
+	  </div>
+	</form>
+  </div>
+  <div class="section vrak-overlay js-vrak-overlay">
+	
+		<iframe src="" width="726" height="487"></iframe>
+  </div>
+</div>
+</script>
+    <script id="tpl_finalists_video" type="text/x-jsmart-tmpl"><div id="finalist-video-wrapper">
+  <!-- Start of Brightcove Player -->
+  <object class="BrightcoveExperience">
+    <param name="bgcolor" value="#FFFFFF" />
+    <param name="width" value="612" />
+    <param name="height" value="344" />
+    <param name="playerID" value="1469722004001" />
+    <param name="playerKey" value="AQ~~,AAABQuUYtRk~,TH7WVzoQgmdx4tHuEDwzigrVovkPmrmg" />
+    <param name="isVid" value="true" />
+    <param name="isUI" value="true" />
+    <param name="dynamicStreaming" value="true" />
+    <!-- params for Universal Player API -->
+    <param name="includeAPI" value="true" />
+    <param name="templateReadyHandler" value="BCL.onTemplateReady" />
+    <param name="wmode" value="opaque" />
+
+    <param name="@videoPlayer" value="{$video_id}" />
+  </object>
+  <!-- End of Brightcove Player -->
+
+  <div class="splash"></div>
+
+  <div class="inner">
+    
+    {if $item_id}
+    <div class="likes-wrapper fleft">
+      <div class="icon general-sprite js-like" data-id="{$item_id}" data-type="HeapAtom"></div> <span class="js-like-count">{$like_count}</span>
+    </div>
+    {/if}
+    
+
+
+
+    <div class="share-block light show-{if $share == true}true{else}false{/if} fright">
+      <div class="label fleft">Partage</div>
+      
+      <a href="https://www.facebook.com/sharer/sharer.php?s=100&p[url]={$url}" class="trans-03s fb-icon icon fleft vote-sprite not-external js-fb-share" target="_blank" data-url="{$url}" data-share_text="{$share_text}" data-share_title="{$share_title}" data-share_image="{$share_image}" data-ga_title="{$ga_title}" data-ga_section="Nouvelles">Facebook</a>
+
+      <a href="http://twitter.com/share?url={$url}&text={$twitter_text}" class="trans-03s tw-icon icon fleft vote-sprite not-external" target="_blank" onclick="window.open('http://twitter.com/share?url={$url}&text={$twitter_text}','popup','width=570,height=300,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=no,menubar=no,status=no,left=50,top=0'); return false" data-ga_title="{$ga_title}" data-ga_section="Nouvelles">Twitter</a>
+      
+      <span class="clear"></span>
+    </div>
+
+
+    <div class="clear"></div>
+
+
+    <h3>{$name}</h3>
+    <p>{$excerpt}</p>
+  </div>
+</div></script>
+    <script id="tpl_coveritlive" type="text/x-jsmart-tmpl"><div id="cover-it-live-wrapper" class=".js-cover-it-live-wrapper">
+  
+</div></script>
+    <script id="tpl_brightcove" type="text/x-jsmart-tmpl"><!-- Start of Brightcove Player -->
+<object class="BrightcoveExperience">
+  <param name="bgcolor" value="#FFFFFF" />
+  <param name="width" value="{$width}" />
+  <param name="height" value="{$height}" />
+  <param name="playerID" value="1469722004001" />
+  <param name="playerKey" value="AQ~~,AAABQuUYtRk~,TH7WVzoQgmdx4tHuEDwzigrVovkPmrmg" />
+  <param name="isVid" value="true" />
+  <param name="isUI" value="true" />
+  <param name="dynamicStreaming" value="true" />
+  <param name="autoStart" value="true" />
+  <param name="autoPlay" value="true" />
+  <!-- params for Universal Player API -->
+  <param name="includeAPI" value="true" />
+  <param name="templateReadyHandler" value="BCL.onTemplateReady" />
+  <param name="wmode" value="opaque" />
+
+  <param name="@videoPlayer" value="{$video_id}" />
+</object>
+<!-- End of Brightcove Player --></script>
+    <script id="tpl_carousel_video" type="text/x-jsmart-tmpl"><div id="lightbox-carousel-video">
+  <div class="lightbox-carousel-video-container js-lightbox-carousel-video-container">
+    {$content_video}
+  </div>
+  <a href="#" class="fle fle-left not-external general-sprite js-carousel-fle"></a>
+  <a href="#" class="fle fle-right not-external general-sprite js-carousel-fle"></a>
+</div></script>
+    <script id="tpl_carousel_video_item" type="text/x-jsmart-tmpl"><div class="video-carousel-item">
+  <!-- Start of Brightcove Player -->
+  <object class="BrightcoveExperience">
+    <param name="bgcolor" value="#FFFFFF" />
+    <param name="width" value="612" />
+    <param name="height" value="344" />
+    <param name="playerID" value="1469722004001" />
+    <param name="playerKey" value="AQ~~,AAABQuUYtRk~,TH7WVzoQgmdx4tHuEDwzigrVovkPmrmg" />
+    <param name="isVid" value="true" />
+    <param name="isUI" value="true" />
+    <param name="dynamicStreaming" value="true" />
+    <!-- params for Universal Player API -->
+    <param name="includeAPI" value="true" />
+    <param name="templateReadyHandler" value="BCL.onTemplateReady" />
+    <param name="wmode" value="opaque" />
+
+    <param name="@videoPlayer" value="{$video_id}" />
+  </object>
+  <!-- End of Brightcove Player -->
+
+  <div class="inner">
+    
+    {if $item_id}
+    <div class="likes-wrapper fleft">
+      <div class="icon general-sprite js-like" data-id="{$item_id}" data-type="HeapAtom"></div> <span class="js-like-count">{$like_count}</span>
+    </div>
+    {/if}
+    
+
+    <div class="share-block light show-{if $share == true}true{else}false{/if} fright">
+      <div class="label fleft">Partage</div>
+      
+      <a href="https://www.facebook.com/sharer/sharer.php?s=100&p[url]={$url}" class="trans-03s fb-icon icon fleft vote-sprite not-external js-fb-share" target="_blank" data-url="{$url}" data-share_text="{$share_text}" data-share_title="{$share_title}" data-share_image="{$share_image}" data-ga_title="{$ga_title}" data-ga_section="Nouvelles">Facebook</a>
+
+      <a href="http://twitter.com/share?url={$url}&text={$twitter_text}" class="trans-03s tw-icon icon fleft vote-sprite not-external" target="_blank" onclick="window.open('http://twitter.com/share?url={$url}&text={$twitter_text}','popup','width=570,height=300,scrollbars=yes,resizable=yes,toolbar=no,directories=no,location=no,menubar=no,status=no,left=50,top=0'); return false" data-ga_title="{$ga_title}" data-ga_section="Nouvelles">Twitter</a>
+      <span class="clear"></span>
+    </div>
+
+
+    <div class="clear"></div>
+
+
+    <h3>{$name}</h3>
+    <p>{$excerpt}</p>
+  </div>
+</div></script>
+
+        
+    <div id="fb-root"></div>
+  </body>
+</html>
+
