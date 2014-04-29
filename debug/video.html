@@ -1,0 +1,94 @@
+<html>
+<head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>
+    var ENV = "production";
+    var userAge = "over12";
+    </script>
+    
+    <script type="text/javascript" src="ais.js"></script> 
+</head>
+<body>
+
+<div class="videoFile">
+        <div class="playerContainer">
+            
+  
+
+
+
+
+
+
+
+
+                    
+    <script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+
+    <object id="myExperience3450490491001" class="BrightcoveExperience">
+        <param name="bgcolor" value="#FFFFFF" />
+        <param name="width" value="670" />
+        <param name="height" value="377" />
+        <param name="playerID" value="3450490491001" />
+                    <param name="playerKey" value="AQ~~,AAACoOybSlk~,o_k0zinIjlTrQfdVorcSm7qml2MGp8cO" />
+        
+        <param name="isVid" value="true" />
+        <param name="isUI" value="true" />
+        <param name="dynamicStreaming" value="true" />
+        <param name="wmode" value="transparent" />
+
+                    <param name="linkBaseURL" value="" />
+                        
+        <param name="@videoPlayer" value="ref:V0121424_0101AGH" />
+
+        <param name="includeAPI" value="true" />
+        <param name="templateLoadHandler" value="bcplayer.onTemplateLoaded" />
+        <param name="templateReadyHandler" value="bcplayer.onTemplateReady" />
+        <param name="templateErrorHandler" value="bcplayer.onTemplateError" />
+        <param name="autoStart" value="false" />     </object>
+ 
+    <script type="text/javascript" src="bcplayer.js"></script>
+    <script type="text/javascript">
+        bcplayer.bind(bcplayer.Events.DRM_WITH_HTML5, function(evt){ alert("drm on html5"); } );
+        bcplayer.bind(bcplayer.Events.ERROR_NOT_AUTHZ, function(evt){ alert("you don't have access to this channel"); } );
+        bcplayer.bind(bcplayer.Events.ERROR_NOT_AUTHN, function(evt){ tve.openLoginLightbox() } );
+
+                                
+        var gptAdKeys = "showid%3D" + "1-1093957" + "%26" + "showname%3D" + "decoretavie";
+        if( typeof Krux !== "undefined"){
+            gptAdKeys += "%26" + "u%3D" + Krux.user ;
+        }
+        
+        bcplayer.init({
+            tve: false,
+            baseurl:"http://idp.securetve.com/rest/1.0/",
+            autoStart:false,
+            video:{
+                duration:1340,
+                isAuth:false,
+                isDrm:false,
+                aisVideoId:"V0121424_0101AGH|1.1325292",
+                aisResource:"canalvie",
+            },
+            aisPlatformId:"urn:bellmedia:com:sp:astral:fr:canalvie:prod:1",
+            gptAdUnit1:"/3826/sri.canalvie",
+            gptAdUnit2:"webtele",
+            gptAdKeys:gptAdKeys
+        });
+
+        $(document).on("tveMobileReady", function(e, tveMobile) {
+            var height = tveMobile.getPlayerHeight(377, 230);
+            var width = tveMobile.getPlayerWidth(670, 370);
+            
+                        if (height !== 377 || width !== 670) {
+                $("#myExperience3450490491001").attr("width", width);
+                $("#myExperience3450490491001").attr("height", height);
+            }
+        });
+    </script>
+        </div>
+    </div>
+    
+    
+</body>
+</html>
