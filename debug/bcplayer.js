@@ -360,7 +360,7 @@ var bcplayer = (function () {
         	gptAdUnit1 += "html5";
         }
 
-        log("bcplayer --- setAds gptAdUnit1, isMidroll " + gptAdUnit1 + ", " + isMidroll);
+        log("bcplayer --- setAds gptAdUnit1,gptAdUnit2,isMidroll,sz " + gptAdUnit1 + "," + gptAdUnit2+ "," + isMidroll+ "," + sz);
         
         var gptAdUnit = gptAdUnit1 + "/" + gptAdUnit2;
         
@@ -370,6 +370,8 @@ var bcplayer = (function () {
         
     	adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + gptAdUnit
     	+ "&sz=" + sz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
+
+        log("bcplayer --- setAds, adServerUrl = " + adServerUrl); 
     	
         var adPolicy = Object.create(null);
 	    adPolicy.adServerURL = adServerUrl;	    
