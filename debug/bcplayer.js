@@ -354,10 +354,6 @@ var bcplayer = (function () {
     };
     
     setAds = function () {
-    
-        // no ads for kids...
-        if ( userAge === "under12") { return; }
-
         var sz = (video.duration < 300) ? "9x9" : "9x10";
         
         if (playerType === "html") {
@@ -398,6 +394,7 @@ var bcplayer = (function () {
 
     //====== public methods =======//
     onTemplateLoaded = function (experienceID) {
+    	
         log("bcplayer --- onTemplateLoad");
         brightcove.createExperiences();
         player = brightcove.api.getExperience(experienceID);
