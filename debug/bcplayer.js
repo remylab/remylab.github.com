@@ -360,7 +360,7 @@ var bcplayer = (function () {
         	gptAdUnit1 += "html5";
         }
 
-        log("bcplayer --- setAds gptAdUnit1,gptAdUnit2,isMidroll,sz " + gptAdUnit1 + "," + gptAdUnit2+ "," + isMidroll+ "," + sz);
+        log("bcplayer --- setAds gptAdUnit1,gptAdUnit2,gptAdKeys,isMidroll,sz " + gptAdUnit1 + "," + gptAdUnit2+ "," + gptAdKeys+ "," + isMidroll+ "," + sz);
         
         var gptAdUnit = gptAdUnit1 + "/" + gptAdUnit2;
         
