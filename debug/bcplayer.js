@@ -132,9 +132,6 @@ var bcplayer = (function () {
 
     // debug logging
     log = function (message) {
-        if (ENV !== undefined || ENV === "production") {
-            return;
-        }
 
         if (window.console) {
             console.log(message);
