@@ -395,11 +395,12 @@ var bcplayer = (function () {
     //====== public methods =======//
     onTemplateLoaded = function (experienceID) {
     	
-        log("bcplayer --- onTemplateLoad");
+        log("bcplayer --- onTemplateLoaded");
         brightcove.createExperiences();
         player = brightcove.api.getExperience(experienceID);
         playerType = player.type;
         APIModules = brightcove.api.modules.APIModules;
+        log("bcplayer --- onTemplateLoaded #1");
         mediaEvent = brightcove.api.events.MediaEvent;
         authModule = player.getModule(APIModules.AUTH);
         adEvent = brightcove.api.events.AdEvent;
