@@ -359,6 +359,8 @@ var bcplayer = (function () {
         if (playerType === "html") {
         	gptAdUnit1 += "html5";
         }
+
+        log("bcplayer --- setAds gptAdUnit1, isMidroll " + gptAdUnit1 + ", " + isMidroll);
         
         var gptAdUnit = gptAdUnit1 + "/" + gptAdUnit2;
         
