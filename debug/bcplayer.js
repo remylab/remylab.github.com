@@ -371,7 +371,8 @@ var bcplayer = (function () {
     	adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + gptAdUnit
     	+ "&sz=" + sz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
 
-        log("bcplayer --- setAds, adServerUrl = " + adServerUrl); 
+        log("bcplayer --- setAds, adServerUrl = " + adServerUrl);
+        log("bcplayer --- setAds, video.duration = " + video.duration);  
     	
         var adPolicy = Object.create(null);
 	    adPolicy.adServerURL = adServerUrl;	    
@@ -379,6 +380,8 @@ var bcplayer = (function () {
 	    adPolicy.playerAdKeys = gptAdKeys;
 	    adPolicy.adPlayCap = (video.duration < 300) ? 1 : 2;
 	    adPolicy.midrollAds = true;
+	    
+	    log("bcplayer --- setAds advertising.setAdPolicy");
 	    advertising.setAdPolicy(adPolicy);
 	    
 
