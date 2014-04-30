@@ -374,7 +374,7 @@ var bcplayer = (function () {
         log("bcplayer --- setAds, adServerUrl = " + adServerUrl);
         log("bcplayer --- setAds, video.duration = " + video.duration);  
     	
-        var adPolicy = Object.create(null);
+        var adPolicy = {};
 	    adPolicy.adServerURL = adServerUrl;	    
 	    adPolicy.prerollAds = (video.duration >= 180);
 	    adPolicy.playerAdKeys = gptAdKeys;
