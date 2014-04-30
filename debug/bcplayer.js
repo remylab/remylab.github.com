@@ -376,6 +376,9 @@ var bcplayer = (function () {
 	    adPolicy.adPlayCap = (video.duration < 300) ? 1 : 2;
 	    adPolicy.midrollAds = true;
 	    advertising.setAdPolicy(adPolicy);
+	    
+
+        log("bcplayer --- setAds, adServerUrl = " + adPolicy.adServerURL);
     };
 
     checkVideo = function () {
