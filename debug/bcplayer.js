@@ -351,6 +351,9 @@ var bcplayer = (function () {
     };
     
     setAds = function () {
+
+        log("bcplayer --- setAds");
+        
         var sz = (video.duration < 300) ? "9x9" : "9x10";
         
         if (playerType === "html") {
