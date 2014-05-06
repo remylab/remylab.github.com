@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--
+  ~ Copyright (c) 2011-2013 by Animatron.
+  ~ All rights are reserved.
+  -->
+
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+    <title>&quot;moon cat&quot; by Stéphane Reiss</title>
+    <meta name="description" content="">
+
+    <meta property="og:title" content="&quot;moon cat&quot; by Stéphane Reiss"/>
+    <meta property="og:type" content="video.movie"/>
+    <meta property="og:image" content="http://animatron-previews.s3.amazonaws.com/95b76353765d267db06eaf1e_acf6675379a4539fb541ee6a-0_320.png"/>
+    <meta property="og:site_name" content="Animatron"/>
+
+    <meta name="twitter:card" content="photo">
+    <meta name="twitter:site" content="@animatron">
+    <meta property="twitter:title" content="&quot;moon cat&quot; by Stéphane Reiss"/>
+    <meta name="twitter:image:src" content="http://animatron-previews.s3.amazonaws.com/95b76353765d267db06eaf1e_acf6675379a4539fb541ee6a-0_320.png"/>
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body.no-iframe {
+            background-color: rgb(51, 51, 51);
+        }
+
+        canvas.no-iframe {
+            border: 1px solid #ccc;
+            top: 50%;
+            left: 50%;
+            display: block;
+            position: absolute;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas.no-rect {
+            top: 10%;
+            left: 10%;
+        }
+    </style>
+        <script type="text/javascript" src="./player.js"></script>
+    <script type="text/javascript">
+        var playerDomain = 'player.animatron.com';
+        var amazonDomain = 'http://s3.amazonaws.com/animatron-snapshots';
+        var width = 550;
+        var height = 450;
+        var playerVersion = 'latest';
+        var filename = 'project';
+        var autostart = false;
+        var loop = false;
+        var animation = {"meta":{"id":"95b76353765d267db06eaf1e","created":1399043989528,"modified":1399045039495,"author":"Stéphane Reiss","description":"","name":"moon cat","copyright":"Copyright (c) by Stéphane Reiss","duration":2.0,"numberOfScenes":1,"projectAccess":{"access":"Public","readOnly":true,"webContentAccess":true,"editorAccess":true}},"anim":{"dimension":[550.0,450.0],"framerate":24.0,"loop":false,"paths":["KIZHBt3QhMA=","KpaigLA7ta25gALuEJg=","JZCsLYXoTA==","KkMERBLaMwB9FBkhCYA=","KIaFilf4z/4ML5uEIhEJgA==","KkMERBLaITA="],"elements":[[2,"$$$LIBRARY$$$",10.0,[],{}],[2,"Scene1",2.0,[[2,"Layer 3","","",[300.0,223.0],"",4,[[1,[0.0,2.0],"",[0.0,-6.295199182623774]],[1,[2.0],"",[-6.295199182623774]],[2,[],"",[0.175,0.209]],[4,[0.0,2.0],"",1],[4,[2.0],"",2]],{}],[3,"Layer 2","","",[400.0,400.0],"",4,[[1,[0.0,1.0],"",[1.6534698176788223,6.283185307179525]],[1,[1.0],"",[6.283185307179525]],[2,[],"",[0.278,0.273]],[4,[0.0,0.2],"",3],[4,[0.2,2.0],3,4],[4,[2.0],3,5]],{}]],{}],[8,"28b86353de8d08b7c6b07990.gif",[600.0,446.0]],[8,"2bb86353b76007b4555bd069.png",[800.0,800.0]]],"scenes":[1]}};
+    </script>
+</head>
+<body onload="if(typeof start === 'function' ) { start(); }">
+
+<canvas id="target"></canvas>
+
+    <script type="text/javascript">
+        var CANVAS_ID = 'target';
+        var cvs = document.getElementById(CANVAS_ID);
+
+        document.body.className = 'no-iframe';
+        cvs.className = 'no-iframe';
+        cvs.style.width = width + 'px';
+        cvs.style.height = height + 'px';
+        cvs.style.marginLeft = -Math.floor(width / 2) + 'px';
+        cvs.style.marginTop = -Math.floor(height / 2) + 'px';
+
+
+        anm.createPlayer(CANVAS_ID).load(animation, anm.createImporter('animatron'));
+
+
+    </script></body>
+</html>
