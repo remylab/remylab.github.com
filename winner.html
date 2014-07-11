@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset='utf-8' />
+        <title>And the winner is...</title>
+        <script>
+        var a=["PeeJay","Louiss-Thomass","Seub","Francistaillon","M. Rémy", "Stéphane","David Lafrance"];
+        var as = a.length;
+        var winner;
+        
+        var qF = function() {
+        	document.getElementById('qF').value = "";
+        }
+        var onS = function() {
+            document.getElementById('question').style.display = 'none';
+            counter(3);
+            winner = a[Math.floor(Math.random()*as)];
+            document.getElementById('request').innerHTML = document.getElementById('qF').value;
+        }
+        var counter = function(n) {
+            document.getElementById('counter').innerHTML = (n+"");
+            setInterval(function(){
+                if (n > 0) {
+                	counter(n-1);
+                    if ( n == 1 ) {
+                        document.getElementById('request').style.display = 'block';
+                        document.getElementById('counter').style.display = 'none';
+                        document.getElementById('img').style.display = 'block';
+                        document.getElementById('winner').innerHTML = winner;
+                    }
+                } 
+            },1000);
+        }
+        
+        </script>
+        <style>
+        .center {
+            text-align:center;
+            margin-top:100px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
+        input, button, label{
+            font-size:24px;
+        }
+        </style>
+    </head>
+    
+    <body style="font-size:250%;">
+        <div class="center" style="overflow:hidden;position:relative;">
+            <div id="question">
+                <label>Your request :</label><br/>
+                <input id="qF" type="text" onfocus="qF();" size="50" value="Example : Who will take ticket VRAK-3710 ?"></input><br/>
+                <button type="submit" onclick="onS();">Pick a winner !</button>
+            </div>
+            <span style="font-size:80px;" id="counter"></span>
+            
+            <p><span style="display:none;font-size:30px;float:left;color:red;" id="request"></span><p>
+            <img id="img"  class="center" style="display:none;" src="images/winner.gif"></img>
+            <span style="font-size:80px;float:left;width:100%;" id="winner"></span>
+        </div>
+    </body>
+</html>
