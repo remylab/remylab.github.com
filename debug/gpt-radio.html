@@ -3,7 +3,39 @@
 <script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
 </head>
 
+<script type="text/javascript">
+
+	var googletag = googletag || {};
+	googletag.cmd = googletag.cmd || [];
+	(function(){ var gads = document.createElement('script');
+	    gads.async = true; gads.type = 'text/javascript';
+	    var useSSL = 'https:' == document.location.protocol;
+	    gads.src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
+	    var node = document.getElementsByTagName('script')[0];
+	    node.parentNode.insertBefore(gads, node);
+	})(); 
+
+	googletag.cmd.push(function() {
+	               
+		googletag.defineSlot('/5479/testdesktop/astralradio', [300, 250], 'bc_video_player_bigbox')
+		.addService(googletag.companionAds())
+		.addService(googletag.pubads());
+		
+		googletag.pubads().enableVideoAds();
+		
+		googletag.companionAds().setRefreshUnfilledSlots(true);
+		googletag.enableServices();
+	 
+	});
+	
+</script>
+ 
 <body>
+			  BIG BOX 
+              <div id="bc_video_player_bigbox"></div>
+              
+              <br/>
+              
               <object id="myExperience" class="BrightcoveExperience">
                 <param name="playerID" value="3476195631001">
                 <param name="playerKey" value="AQ~~,AAABBAr_QzE~,V4SJUhUU5AAtWreBFwox4YUZy6lXV_Nf">
@@ -25,6 +57,7 @@
 			      <param name="templateReadyHandler" value="FBC.onTemplateReady" />
                 <param name="includeAPI" value="true" />
               </object>
+              
 
 
 <script type="text/javascript">
