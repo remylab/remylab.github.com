@@ -1,0 +1,61 @@
+<html>
+<head>
+<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+</head>
+
+<body>
+              <object id="myExperience" class="BrightcoveExperience">
+                <param name="playerID" value="3476195631001">
+                <param name="playerKey" value="AQ~~,AAABBAr_QzE~,V4SJUhUU5AAtWreBFwox4YUZy6lXV_Nf">
+                <param name="videoId" value="2016052196001" />
+                <param name="autoStart" value="true" />
+                <param name="quality" value="high">
+                <param name="allowScriptAccess" value="always">
+                <param name="allowFullScreen" value="true">
+                <param name="seamlessTabbing" value="false">
+                <param name="swliveconnect" value="true">
+                <param name="wmode" value="opaque">
+                <param name="quality" value="high">
+                <param name="bgcolor" value="#000000">
+                <param name="width" value="990" />
+                <param name="isVid" value="true" />
+                <param name="isUI" value="true" />
+                <param name="dynamicStreaming" value="true" />
+			      <param name="templateLoadHandler" value="FBC.onTemplateLoaded" />
+			      <param name="templateReadyHandler" value="FBC.onTemplateReady" />
+                <param name="includeAPI" value="true" />
+              </object>
+
+
+<script type="text/javascript">
+   var FBC = {};   
+   FBC.gptAdUnit1 = "/5479/testdesktop/astralradio" ;
+   FBC.adSz = "9x10";
+   
+   FBC.onTemplateLoaded = function (experienceID) {
+       brightcove.createExperiences();
+       var player = brightcove.api.getExperience(experienceID);
+       var APIModules = brightcove.api.modules.APIModules;
+       
+       FBC.playerType = player.type;
+       FBC.mediaEvent = brightcove.api.events.MediaEvent;
+       FBC.advertising = player.getModule(APIModules.ADVERTISING);
+   };
+   
+   FBC.onTemplateReady = function () {
+	   var adUnit = FBC.gptAdUnit1;
+       if (FBC.playerType === "html") {
+    	   adUnit += "html5";
+       }
+       var adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + adUnit
+       + "&sz=" + FBC.adSz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
+       
+       var adPolicy = {};
+       adPolicy.adServerURL = adServerUrl;     
+       adPolicy.prerollAds = true;
+       adPolicy.adPlayCap = 1;
+       FBC.advertising.setAdPolicy(adPolicy);
+   }
+</script>
+</body>
+</html>
