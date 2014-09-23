@@ -1,0 +1,99 @@
+<html>
+<head>
+<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+</head>
+
+<script type="text/javascript">
+
+	var googletag = googletag || {};
+	googletag.cmd = googletag.cmd || [];
+	(function(){ var gads = document.createElement('script');
+	    gads.async = true; gads.type = 'text/javascript';
+	    var useSSL = 'https:' == document.location.protocol;
+	    gads.src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
+	    var node = document.getElementsByTagName('script')[0];
+	    node.parentNode.insertBefore(gads, node);
+	})(); 
+
+	googletag.cmd.push(function() {
+		googletag.pubads().disableInitialLoad();    
+		
+		googletag.defineSlot('/5479/testdesktop/astralradio', [300, 250], 'bc_video_player_bigbox')
+		.addService(googletag.companionAds());
+
+		googletag.companionAds().setRefreshUnfilledSlots(true); 
+		googletag.pubads().enableVideoAds(); 
+		googletag.enableServices(); 
+	 
+	});
+	
+</script>
+ 
+<body>
+			  BIG BOX 
+              <div id="bc_video_player_bigbox">
+                     <script type='text/javascript'>
+                     googletag.cmd.push(function() { googletag.display('bc_video_player_bigbox'); });
+                     </script>
+              </div>
+              
+              <br/>
+              
+              <object id="myExperience" class="BrightcoveExperience">  
+  <param name="width" value="325" />
+  <param name="height" value="285" />
+  <param name="playerID" value="3799959783001" />
+  <param name="playerKey" value="AQ~~,AAACoOybSlk~,o_k0zinIjlR9Ovetv3hAQJXrJqN0rhyv" />
+                <param name="videoId" value="3799185338001" />
+                <param name="autoStart" value="true" />
+                <param name="quality" value="high">
+                <param name="allowScriptAccess" value="always">
+                <param name="allowFullScreen" value="true">
+                <param name="seamlessTabbing" value="false">
+                <param name="swliveconnect" value="true">
+                <param name="wmode" value="opaque">
+                <param name="quality" value="high">
+                <param name="bgcolor" value="#000000">
+                <param name="width" value="990" />
+                <param name="isVid" value="true" />
+                <param name="isUI" value="true" />
+                <param name="dynamicStreaming" value="true" />
+			      <param name="templateLoadHandler" value="FBC.onTemplateLoaded" />
+			      <param name="templateReadyHandler" value="FBC.onTemplateReady" />
+                <param name="includeAPI" value="true" />
+              </object>
+              
+
+
+<script type="text/javascript">
+   var FBC = {};   
+   FBC.gptAdUnit1 = "/5479/testdesktop/astralradio" ;
+   FBC.adSz = "9x10";
+   
+   FBC.onTemplateLoaded = function (experienceID) {
+       brightcove.createExperiences();
+       var player = brightcove.api.getExperience(experienceID);
+       var APIModules = brightcove.api.modules.APIModules;
+       
+       FBC.playerType = player.type;
+       FBC.mediaEvent = brightcove.api.events.MediaEvent;
+       FBC.advertising = player.getModule(APIModules.ADVERTISING);
+   };
+   
+   FBC.onTemplateReady = function () {
+	   var adUnit = FBC.gptAdUnit1;
+       if (FBC.playerType === "html") {
+    	   adUnit += "html5";
+       }
+       var adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + adUnit
+       + "&sz=" + FBC.adSz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
+       
+       var adPolicy = {};
+       adPolicy.adServerURL = adServerUrl;     
+       adPolicy.prerollAds = true;
+       adPolicy.adPlayCap = 1;
+       FBC.advertising.setAdPolicy(adPolicy);
+   }
+</script>
+</body>
+</html>
