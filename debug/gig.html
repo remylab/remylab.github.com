@@ -1,0 +1,43 @@
+<html>
+<head>
+<script src="http://cdn.gigya.com/JS/gigya.js?apikey=2_1_L_M68VhGW4trWvXZ0Z82kWuL1WHaVaU2tm6w37KxrQVCqHidxjCI0OrwKghLTA&lang=fr-ca"></script>
+
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script>
+var ua = new gigya.services.socialize.UserAction();
+
+ua.setLinkBack('http://remylab.github.io');
+ua.setTitle('remylab test title');
+ua.setDescription('remylab test description');
+
+var shareBarParamsVertical ={
+        userAction: ua,
+        lang: "fr",
+        layout:'vertical',
+        shareButtons:'googleplus,facebook,twitter',
+        showCounts:'none',
+        containerID: "gigyaShareBarVertical", //the div id
+        shortURLs: "never",
+        emailBody: "Bonjour !"
+        
+    }
+    
+</script>
+
+
+<style> div.gig-button-text {color:green;}</style>	
+
+
+</head>
+<body>
+
+	share
+	<div id="gigyaShareBarVertical"></div>
+
+	<script>
+	gigya.services.socialize.showShareBarUI({},shareBarParamsVertical);
+
+	</script>
+</body>
+
+</html>
