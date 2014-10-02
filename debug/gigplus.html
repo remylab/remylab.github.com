@@ -4,11 +4,8 @@
 
 <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script>
-var ua = new gigya.services.socialize.UserAction();
 
-ua.setLinkBack('http://remylab.github.io');
-ua.setTitle('remylab test title');
-ua.setDescription('remylab test description');
+var ua = {};
 
 var shareBarParamsVertical ={
         userAction: ua,
@@ -28,6 +25,9 @@ var shareBarParamsVertical ={
 	    	var shareId = share.attr("id");
 	    	
 	    	if ($(this).hasClass('active') ) {
+	    		
+	    		ua = {};
+	    		ua = new gigya.services.socialize.UserAction();
 	    		
 	    		$(this).html("[-]");
 		    	ua.setLinkBack('http://remylab.github.io/' + shareId );
