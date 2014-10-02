@@ -19,12 +19,17 @@ var shareBarParamsVertical ={
     }
     
 	$(function() {
+		$(".sharebutton").addClass("inactive");
+		
 	    $(".sharebutton").on("click",function(){
-	    	$(this).toggleClass("active");
+	    	
 	    	var share = $(this).next();
 	    	var shareId = share.attr("id");
 	    	
-	    	if ($(this).hasClass('active') ) {
+	    	if ($(this).hasClass('inactive') ) {
+	    		$(".sharecontainer").hide();
+	    		$(".sharebutton").removeClass("active").addClass("inactive").html("[+]");
+	    		$(this).removeClass("inactive").addClass("active");
 	    		
 	    		ua = {};
 	    		ua = new gigya.services.socialize.UserAction();
@@ -46,6 +51,7 @@ var shareBarParamsVertical ={
 	    		},50);
 	    		
 	    	} else {
+	    		$(this).removeClass("active").addClass("inactive");
 	    		$(this).html("[+]");
 	    		share.hide().html("");
 	    	}
