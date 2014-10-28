@@ -1,0 +1,88 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+
+    <script type="text/javascript" src="ima3.js"></script>
+    <script type="text/javascript" src="application.js"></script>
+    <script type="text/javascript" src="ads.js"></script>
+    <script type="text/javascript" src="video_player.js"></script>
+
+    <!-- GPT Companion Code -->
+    <!-- Initialize the tagging library -->
+     <script type='text/javascript'>
+       var googletag = googletag || {};
+       googletag.cmd = googletag.cmd || [];
+       (function() {
+         var gads = document.createElement('script');
+         gads.async = true;
+         gads.type = 'text/javascript';
+         gads.src = '//www.googletagservices.com/tag/js/gpt.js';
+         var node = document.getElementsByTagName('script')[0];
+         node.parentNode.insertBefore(gads, node);
+       })();
+     </script>
+
+     <!-- Register your companion slots -->
+     <script type='text/javascript'>
+       googletag.cmd.push(function() {
+         // Supply YOUR_NETWORK/YOUR_UNIT_PATH in place of 6062/iab_vast_samples.
+         googletag.defineSlot('/6062/vikasmc', [300, 250], 'div-gpt-ad-1411765043774-0')
+             .addService(googletag.companionAds())
+             .addService(googletag.pubads());
+         googletag.companionAds().setRefreshUnfilledSlots(true);
+         googletag.pubads().enableVideoAds();
+         googletag.pubads().disableInitialLoad();  
+         googletag.enableServices();
+       });
+     </script>
+
+    <title>IMA HTML5 SDK Advanced Demo</title>
+  </head>
+  <body>
+  <div id="container">
+    <header>IMA HTML5 SDK Advanced Demo</header>
+
+    <center>
+      <label for="tag">Tag (<span id="sampleAdTag" class="urlLink">sample</span>):&nbsp;</label>
+      <input type="text" size="75" id="tagText" />
+    </center>
+
+    <div id="videoplayer">
+      <video id="content">
+        <source src="android.webm"></source>
+        <source src="android.mp4"></source>
+      </video>
+      <div id="adcontainer">
+      </div>
+      <button id="playpause" title="Play/Pause">&#9654;</button>
+      <button id="fullscreen" title="Full screen">[&nbsp;&nbsp;&nbsp;]</button>
+    </div>
+
+    <!-- Declare a div where you want the companion to appear. Use
+          googletag.display() to make sure the ad is displayed. -->
+    
+	<!-- vikasmc -->
+<div id='div-gpt-ad-1411765043774-0' style='width:300px; height:250px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1411765043774-0'); });
+</script>
+</div>
+	
+
+    <div id="console">
+    Welcome to IMA HTML5 SDK Demo!
+    </div>
+
+    <footer>Copyright (C) 2013 Google Inc.</footer>
+  </div>
+  <script type="text/javascript">
+  var application = null;
+
+  window.onload = function() {
+    application = new Application();
+  };
+  </script>
+  </body>
+</html>
+
+
