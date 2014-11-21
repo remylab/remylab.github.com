@@ -1,0 +1,70 @@
+<html>
+<head>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+
+<body>
+    <script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+    <script type="text/javascript" src="streamsense.min.js"></script>
+    <script type="text/javascript" src="bcplayer.js"></script>
+    
+    <object id="myExperience3450490491001" class="BrightcoveExperience">
+        <param name="bgcolor" value="#FFFFFF" />
+        <param name="width" value="670" />
+        <param name="height" value="377" />
+        <param name="playerID" value="3450490491001" />
+                    <param name="playerKey" value="AQ~~,AAACoOybSlk~,o_k0zinIjlTrQfdVorcSm7qml2MGp8cO" />
+        
+        <param name="isVid" value="true" />
+        <param name="isUI" value="true" />
+        <param name="dynamicStreaming" value="true" />
+        <param name="wmode" value="transparent" />
+
+                
+        <param name="@videoPlayer" value="ref:V0149305_0101ACH" />
+
+        <param name="includeAPI" value="true" />
+        <param name="templateLoadHandler" value="bcplayer.onTemplateLoaded" />
+        <param name="templateReadyHandler" value="bcplayer.onTemplateReady" />
+        <param name="templateErrorHandler" value="bcplayer.onTemplateError" />
+		<param name="autoStart" value="true" /> 
+	</object>
+
+    <script type="text/javascript" src="ais.js"></script>
+    <script>
+        document.write(unescape("%3Cscript src='" + (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js' %3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    
+    	var userAge = "over12";
+    	
+        var gptAdKeys = "showid%3D" + "1-1214697" + "%26" + "showname%3D" + "calinscanins";
+        if( typeof Krux !== "undefined"){
+            gptAdKeys += "%26" + "u%3D" + Krux.user ;
+        }
+
+        bcplayer.init({
+            videoMetrixC2: "3005664",
+            streamSenseC2: "16433042",
+            siteTag: "CANALVIE",
+            tve: false,
+            baseurl:"http://idp.securetve.com/rest/1.0/",
+            autoStart:true,
+            refId: "V0149305_0101ACH",
+            video:{
+                duration:2000,
+                isAuth:true,
+                isDrm:false,
+                aisVideoId:"V0149305_0101ACH|1.1447369",
+                aisResource:"canalvie"
+            },
+			videoType:"Épisodes complets",
+            aisPlatformId:"urn:bellmedia:com:sp:astral:fr:canalvie:prod:1",
+            gptAdUnit1:"/5479/sri.canalvie",
+            gptAdUnit2:"webtele",
+            gptAdKeys:gptAdKeys
+        });
+        
+    </script>
+</body>
+</html>
