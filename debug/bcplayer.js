@@ -97,7 +97,7 @@ var bcplayer = (function () {
         getAPIModules,
         getMediaEvent,
         getAdEvent,
-        triggerAdOnSeek, updateLatestPositions, getBeforeSeekPosition, kickSomeAds,
+        triggerAdOnSeek, updateLatestPositions, getBeforeSeekPosition, kickSomeAds, logCuePoints,
         log;
 
        // METHODS ======================================================================================================
@@ -233,7 +233,7 @@ var bcplayer = (function () {
     };
 
     onAdStart = function (event) {
-        log("bcplayer --- onAdStart");
+
         adStarted = true;
 
         if (isMidroll && !isAfterMidroll) {
@@ -251,33 +251,21 @@ var bcplayer = (function () {
         
         
         // clear kickAds after it has been played
-        log("bcplayer --- remove kickAds position : " + convertToTimecode(kickAdsPosition) );
         if ( kickAdsPosition > 0 ) {
 
+            log("bcplayer --- remove kickAds position : " + convertToTimecode(kickAdsPosition) );
         	cuePointsModule.removeAdCuePointsAtTime(video.bcId, kickAdsPosition);
-        	
-        	cuePointsModule.getCuePoints(video.bcId, function(result){
-        		for(var data in result){
-        			var cuepoint = result[data];
-        			log(cuepoint.name + " : " +convertToTimecode(cuepoint.time));
-        			if ( cuepoint.time > 0 ) {
-        				cuePoints.push(cuepoint.time);
-        			}
-        		}
-        	});
+        	kickAdsPosition = 0;
+			kickAdsPending = false;
+			logCuePoints();
         }
     };
 
     onAdComplete = function (event) {
-        log("bcplayer --- onAdComplete");
         streamSense.notify(ns_.StreamSense.PlayerEvents.END, {}, event.position * 1000);
-        
-
-        
     };
 
     onMediaBegin = function (event) {
-        log("bcplayer --- onMediaBegin");
         isMidroll = true;
         isMediaComplete = false;
         if (event.duration > 600) {
@@ -288,7 +276,6 @@ var bcplayer = (function () {
     };
 
     onMediaPlay = function (event) {
-        log("bcplayer --- onMediaPlay, type =" + playerType);
         isPlaying = true;
         if (mediaClip === undefined) {
             //Set the media as the current clip and notify the first part has started.
@@ -316,7 +303,6 @@ var bcplayer = (function () {
     };
 
     onMediaProgress = function (event) {
-        log("bcplayer --- onMediaProgress");
         if (adStarted) {
             setAds();
         }
@@ -382,7 +368,6 @@ var bcplayer = (function () {
     // From the latestPositions array, ex : [188.161, 187.916, 2.796, 2.534, 2.29, 2.056, 1.791, 1.49, 1.277, 1.074, 0.851, 0.556, 0.27] 
     // we can say the latestSeekPosition is 2.796
     getBeforeSeekPosition = function(seekPos) {
-    	log(" --- getBeforeSeekPosition, seekPos = " + seekPos);
     	for(var i in latestPositions) {
     		var time = latestPositions[i];
     		if ( Math.abs(seekPos-time) > 0.5) {
@@ -393,7 +378,6 @@ var bcplayer = (function () {
     };
 
     onMediaStop = function (event) {
-        log("bcplayer --- onMediaStop");
         isPlaying = false;
         streamSense.notify(ns_.StreamSense.PlayerEvents.PAUSE, {}, event.position * 1000);
         
@@ -405,7 +389,6 @@ var bcplayer = (function () {
     };
 
     onMediaChange = function () {
-        log("bcplayer --- onMediaChange");
         
         if (tve) {  
 	        checkVideo();
@@ -420,7 +403,6 @@ var bcplayer = (function () {
     };
 
     onMediaSeek = function (event) {
-        log("bcplayer --- onMediaSeek");
         if (!isMediaComplete && isPlaying){
         	
         	triggerAdOnSeek(event.position);
@@ -432,13 +414,10 @@ var bcplayer = (function () {
     };
     
     triggerAdOnSeek = function(seekPos) {
-    	log("bcplayer --- triggerAdOneSeek")
-    	log("latestPositions : " + latestPositions);
     	
     	if ( kickAdsPending ) return;
     	
     	var beforePos = getBeforeSeekPosition(seekPos);
-    	log("seekPos, beforePos :" + seekPos + ", " + beforePos);
     	if ( seekPos > beforePos) {
     		for (var i in cuePoints) {
     			var cueTime = cuePoints[i];
@@ -453,25 +432,31 @@ var bcplayer = (function () {
     
     kickSomeAds = function(pos) {
     	kickAdsPosition = pos+1;
-		log("KICK SOME ADS !!! at :" + convertToTimecode(kickAdsPosition) );
-		
-		setTimeout(function(){ 
-        	kickAdsPosition = 0;
-			kickAdsPending = false; 
-		},2000);
+		log("Force midroll ads / at :" + convertToTimecode(kickAdsPosition) );
 	
     	var cuePoints = [{time:kickAdsPosition, type:0}];
     	cuePointsModule.addCuePoints(video.bcId, cuePoints);
 		
+    	logCuePoints();
     };
+    
+    logCuePoints = function(){
+    	log(" === LOG cuePoints from cuePointsModule.getCuePoints");
+    	if ( withLogs ) {
+        	cuePointsModule.getCuePoints(video.bcId, function(result){
+        		for(var data in result){
+        			var cuepoint = result[data];
+        			log(cuepoint.name + " : " +convertToTimecode(cuepoint.time));
+        		}
+        	});
+    	}
+    }
 
     onMediaError = function (event) {
-        log("bcplayer --- onMediaError");
         streamSense.notify(ns_.StreamSense.PlayerEvents.END, {}, event.position * 1000);
     };
 
     onMediaComplete = function (event) {
-        log("bcplayer --- onMediaComplete");
         isMediaComplete = true;
         streamSense.notify(ns_.StreamSense.PlayerEvents.END, {}, event.position * 1000);
     };
@@ -548,7 +533,6 @@ var bcplayer = (function () {
     };
 
     setAds = function () {
-        log("bcplayer --- setAds");
     	// no ads for kids...
         if (userAge === "under12" || videoType == "Bandes-annonces") { return; }
 
