@@ -611,13 +611,14 @@ var bcplayer = (function () {
             adSite = adSite + "html5";
         }
         
+        logCuePoints();
+        
         // get videoDTO id and array of cue points (in seconds)
         videoPlayer.getCurrentVideo(function(result){
         	video.bcId = result.id;
         	cuePointsModule.getCuePoints(video.bcId, function(result){
         		for(var data in result){
         			var cuepoint = result[data];
-        			log(cuepoint.name + " : " +convertToTimecode(cuepoint.time));
         			if ( cuepoint.time > 0 ) {
         				cuePoints.push(cuepoint);
         			}
