@@ -250,10 +250,10 @@ var bcplayer = (function () {
         setAds();
         
         
-        // clear kickAds after it has been played
+        // clearforcedMidroll after it has been played
         if ( forceMidrollPosition > 0 ) {
 
-            log("bcplayer --- remove kickAds position : " + convertToTimecode(forceMidrollPosition) );
+            log("bcplayer --- remove forcedMidroll cuePoint : " + convertToTimecode(forceMidrollPosition) );
         	cuePointsModule.removeAdCuePointsAtTime(video.bcId, forceMidrollPosition);
         	forceMidrollPosition = 0;
 			forceMidrollPending = false;
@@ -420,7 +420,7 @@ var bcplayer = (function () {
     	var beforePos = getBeforeSeekPosition(seekPos);
     	if ( seekPos > beforePos) {
     		for (var i in cuePoints) {
-    			var cueTime = cuePoints[i];
+    			var cueTime = cuePoints[i].time;
     			if ( beforePos < cueTime && cueTime < seekPos) {
     				forceMidrollPending = true;
     				forceMidroll(seekPos);
@@ -434,7 +434,7 @@ var bcplayer = (function () {
     	forceMidrollPosition = pos+1;
 		log("Force midroll ads / at :" + convertToTimecode(forceMidrollPosition) );
 	
-    	var cuePoints = [{time:forceMidrollPosition, type:0}];
+    	var cuePoints = [{name:"forcedCuePoint",time:forceMidrollPosition, type:0}];
     	cuePointsModule.addCuePoints(video.bcId, cuePoints);
 		
     	logCuePoints();
@@ -619,7 +619,7 @@ var bcplayer = (function () {
         			var cuepoint = result[data];
         			log(cuepoint.name + " : " +convertToTimecode(cuepoint.time));
         			if ( cuepoint.time > 0 ) {
-        				cuePoints.push(cuepoint.time);
+        				cuePoints.push(cuepoint);
         			}
         		}
         	});
