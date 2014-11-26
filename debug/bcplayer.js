@@ -97,7 +97,7 @@ var bcplayer = (function () {
         getAPIModules,
         getMediaEvent,
         getAdEvent,
-        triggerAdOnSeek, updateLatestPositions, getBeforeSeekPosition, kickSomeAds, logCuePoints,
+        triggerAdOnSeek, updateLatestPositions, getBeforeSeekPosition, forceMidroll, logCuePoints,
         log;
 
        // METHODS ======================================================================================================
@@ -423,14 +423,14 @@ var bcplayer = (function () {
     			var cueTime = cuePoints[i];
     			if ( beforePos < cueTime && cueTime < seekPos) {
     				kickAdsPending = true;
-    				kickSomeAds(seekPos);
+    				forceMidroll(seekPos);
     				return;
     			}
     		}
     	}
     };
     
-    kickSomeAds = function(pos) {
+    forceMidroll = function(pos) {
     	kickAdsPosition = pos+1;
 		log("Force midroll ads / at :" + convertToTimecode(kickAdsPosition) );
 	
