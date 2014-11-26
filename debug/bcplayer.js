@@ -43,7 +43,7 @@ var bcplayer = (function () {
         isMediaComplete = false,
         currentPosition = 0,
         latestPositions = [0], indexLatestPositions = 0, timeUpdateLatestPositions = 0, // cue points variables
-        kickAdsPending = false, kickAdsPosition = 0,
+        forceMidrollPending = false, forceMidrollPosition = 0,
         lastSavedPosition = 0,
         seekToPosition = null,
         vcsInterval = 30,
@@ -251,12 +251,12 @@ var bcplayer = (function () {
         
         
         // clear kickAds after it has been played
-        if ( kickAdsPosition > 0 ) {
+        if ( forceMidrollPosition > 0 ) {
 
-            log("bcplayer --- remove kickAds position : " + convertToTimecode(kickAdsPosition) );
-        	cuePointsModule.removeAdCuePointsAtTime(video.bcId, kickAdsPosition);
-        	kickAdsPosition = 0;
-			kickAdsPending = false;
+            log("bcplayer --- remove kickAds position : " + convertToTimecode(forceMidrollPosition) );
+        	cuePointsModule.removeAdCuePointsAtTime(video.bcId, forceMidrollPosition);
+        	forceMidrollPosition = 0;
+			forceMidrollPending = false;
 			logCuePoints();
         }
     };
@@ -415,14 +415,14 @@ var bcplayer = (function () {
     
     triggerAdOnSeek = function(seekPos) {
     	
-    	if ( kickAdsPending ) return;
+    	if ( forceMidrollPending ) return;
     	
     	var beforePos = getBeforeSeekPosition(seekPos);
     	if ( seekPos > beforePos) {
     		for (var i in cuePoints) {
     			var cueTime = cuePoints[i];
     			if ( beforePos < cueTime && cueTime < seekPos) {
-    				kickAdsPending = true;
+    				forceMidrollPending = true;
     				forceMidroll(seekPos);
     				return;
     			}
@@ -431,10 +431,10 @@ var bcplayer = (function () {
     };
     
     forceMidroll = function(pos) {
-    	kickAdsPosition = pos+1;
-		log("Force midroll ads / at :" + convertToTimecode(kickAdsPosition) );
+    	forceMidrollPosition = pos+1;
+		log("Force midroll ads / at :" + convertToTimecode(forceMidrollPosition) );
 	
-    	var cuePoints = [{time:kickAdsPosition, type:0}];
+    	var cuePoints = [{time:forceMidrollPosition, type:0}];
     	cuePointsModule.addCuePoints(video.bcId, cuePoints);
 		
     	logCuePoints();
