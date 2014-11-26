@@ -611,7 +611,6 @@ var bcplayer = (function () {
             adSite = adSite + "html5";
         }
         
-        logCuePoints();
         
         // get videoDTO id and array of cue points (in seconds)
         videoPlayer.getCurrentVideo(function(result){
@@ -625,6 +624,8 @@ var bcplayer = (function () {
         		}
         	});
         });
+
+        logCuePoints();
 
         // events for advertisement
         adModule.addEventListener(adEvent.START, onAdStart);
