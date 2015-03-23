@@ -1,0 +1,54 @@
+<html>
+<head>
+<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+</head>
+
+<body>
+v1
+<object id="myExperience" class="BrightcoveExperience">
+  <param name="bgcolor" value="#FFFFFF" />
+  <param name="width" value="796" />
+  <param name="height" value="449" />
+  <param name="playerID" value="3786123380001" />
+  <param name="playerKey" value="AQ~~,AAACoOybUik~,Z8nYBjQENYqHVOBA5yU7RsIMj4OvJ6VT" />
+  <param name="isVid" value="true" />
+  <param name="isUI" value="true" />
+    <param name="wmode" value="transparent" />       
+    <param name="@videoPlayer" value="ref:Z0156616_0101ACH" />
+      <param name="includeAPI" value="true" />
+      <param name="templateLoadHandler" value="FBC.onTemplateLoaded" />
+      <param name="templateReadyHandler" value="FBC.onTemplateReady" />
+</object>
+
+<script type="text/javascript">
+   var FBC = {};   
+   FBC.gptAdUnit1 = "/5479/sri.canalvie/webtele" ;
+   FBC.adSz = "9x10";
+   
+   FBC.onTemplateLoaded = function (experienceID) {
+       brightcove.createExperiences();
+       var player = brightcove.api.getExperience(experienceID);
+       var APIModules = brightcove.api.modules.APIModules;
+       
+       FBC.playerType = player.type;
+       FBC.mediaEvent = brightcove.api.events.MediaEvent;
+       FBC.advertising = player.getModule(APIModules.ADVERTISING);
+   };
+   
+   FBC.onTemplateReady = function () {
+	   var adUnit = FBC.gptAdUnit1;
+       if (FBC.playerType === "html") {
+    	   adUnit += "html5";
+       }
+       var adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + adUnit
+       + "&sz=" + FBC.adSz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
+       
+       var adPolicy = {};
+       adPolicy.adServerURL = adServerUrl;     
+       adPolicy.prerollAds = false;
+       adPolicy.adPlayCap = 1;
+       FBC.advertising.setAdPolicy(adPolicy);
+   }
+</script>
+</body>
+</html>
