@@ -1,54 +1,99 @@
 <html>
 <head>
-<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+    <script type="text/javascript" src="bcplayer.js"></script>
+    <script type="text/javascript">
+                                
+        var gptAdKeys = "showid%3D" + "1-1197877" + "%26" + "showname%3D" + "mayday";
+        if( typeof Krux !== "undefined"){
+            gptAdKeys += "%26" + "u%3D" + Krux.user ;
+        }
+
+        bcplayer.init({
+            videoMetrixC2: "3005664",
+            streamSenseC2: "16433042",
+            siteTag: "CANALD",
+            autoStart:true,
+            ageRestricted:false,
+            refId: "D0143159_0101ACH",
+            video: {
+                duration:2695,
+                rating: "G"
+            },
+            videoType: "Épisodes complets",
+            gptAdUnit1: "/5479/sri.canald",
+            gptAdUnit2: "webtele",
+            gptAdKeys: gptAdKeys
+        });
+
+        $(document).on("tveMobileReady", function (e, tveMobile) {
+            var height = tveMobile.getPlayerHeight(449, 230);
+            var width = tveMobile.getPlayerWidth(796, 370);
+
+                    if (height !== 449 || width !== 796) {
+                $("#myExperience3450496672001").attr("width", width);
+                $("#myExperience3450496672001").attr("height", height);
+            }
+        });
+    </script>
+
+	<!-- VERSION LIGHT script type="text/javascript">
+	   var FBC = {};   
+	   FBC.gptAdUnit1 = "/5479/sri.canalvie/webtele" ;
+	   FBC.adSz = "9x10";
+	   
+	   FBC.onTemplateLoaded = function (experienceID) {
+	       brightcove.createExperiences();
+	       var player = brightcove.api.getExperience(experienceID);
+	       var APIModules = brightcove.api.modules.APIModules;
+	       
+	       FBC.playerType = player.type;
+	       FBC.mediaEvent = brightcove.api.events.MediaEvent;
+	       FBC.advertising = player.getModule(APIModules.ADVERTISING);
+	   };
+	   
+	   FBC.onTemplateReady = function () {
+		   var adUnit = FBC.gptAdUnit1;
+	       if (FBC.playerType === "html") {
+	    	   adUnit += "html5";
+	       }
+	       var adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + adUnit
+	       + "&sz=" + FBC.adSz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
+	       
+	       var adPolicy = {};
+	       adPolicy.adServerURL = adServerUrl;     
+	       adPolicy.prerollAds = true;
+	       adPolicy.adPlayCap = 1;
+	       FBC.advertising.setAdPolicy(adPolicy);
+	   }
+	</script -->
+
 </head>
 
 <body>
-v1
-<object id="myExperience" class="BrightcoveExperience">
-  <param name="bgcolor" value="#FFFFFF" />
-  <param name="width" value="796" />
-  <param name="height" value="449" />
-  <param name="playerID" value="3727155028001" />
-  <param name="playerKey" value="AQ~~,AAACoOybPqE~,U0YPm6r--gZc8Zb46VTwCOygsDWElTb2" />
-  <param name="isVid" value="true" />
-  <param name="isUI" value="true" />
-    <param name="wmode" value="transparent" />       
-    <param name="@videoPlayer" value="ref:D0159439_0101AMH" />
-    <param name="includeAPI" value="true" />
-    <param name="templateLoadHandler" value="FBC.onTemplateLoaded" />
-    <param name="templateReadyHandler" value="FBC.onTemplateReady" />
-</object>
 
-<script type="text/javascript">
-   var FBC = {};   
-   FBC.gptAdUnit1 = "/5479/sri.canalvie/webtele" ;
-   FBC.adSz = "9x10";
-   
-   FBC.onTemplateLoaded = function (experienceID) {
-       brightcove.createExperiences();
-       var player = brightcove.api.getExperience(experienceID);
-       var APIModules = brightcove.api.modules.APIModules;
-       
-       FBC.playerType = player.type;
-       FBC.mediaEvent = brightcove.api.events.MediaEvent;
-       FBC.advertising = player.getModule(APIModules.ADVERTISING);
-   };
-   
-   FBC.onTemplateReady = function () {
-	   var adUnit = FBC.gptAdUnit1;
-       if (FBC.playerType === "html") {
-    	   adUnit += "html5";
-       }
-       var adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + adUnit
-       + "&sz=" + FBC.adSz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
-       
-       var adPolicy = {};
-       adPolicy.adServerURL = adServerUrl;     
-       adPolicy.prerollAds = true;
-       adPolicy.adPlayCap = 1;
-       FBC.advertising.setAdPolicy(adPolicy);
-   }
-</script>
+<div id="videoContainer">
+	<object id="myExperience" class="BrightcoveExperience">
+	  <param name="bgcolor" value="#FFFFFF" />
+	  <param name="width" value="796" />
+	  <param name="height" value="449" />
+	  
+        <param name="playerID" value="3450496672001" />
+                    <param name="playerKey" value="AQ~~,AAACoOybPqE~,U0YPm6r--gbUl45Ufpw-oNkR4j8yPVna" />
+                    
+	  <param name="isVid" value="true" />
+	  <param name="isUI" value="true" />
+	    <param name="wmode" value="transparent" />       
+	    <param name="@videoPlayer" value="ref:D0050488_0101AGH" />
+	    <param name="includeAPI" value="true" />
+        <param name="templateLoadHandler" value="bcplayer.onTemplateLoaded" />
+        <param name="templateReadyHandler" value="bcplayer.onTemplateReady" />
+	</object>
+</div>
+
+
+
+
 </body>
 </html>

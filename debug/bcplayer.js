@@ -2,17 +2,7 @@
 /*global ais_client, $, brightcove */
 var bcplayer = (function () {
     "use strict";
-    var ais,// instance of ais_client
-        //  CONSTANTS ===================================================================================================
-        Events = {
-            DRM_WITH_HTML5 : "bcplayer_drm_with_html5",
-            ERROR_NOT_AUTHZ : "bcplayer_error_not_authz",
-            ERROR_NOT_AUTHN : "bcplayer_error_not_authn"
-        },
-
-        //  PROPERTIES ===================================================================================================
-        tve,
-        isAfterMidroll = false,
+    var isAfterMidroll = false,
         isPlaying = false,
         currentClip = 1,
         mediaClip,
@@ -21,6 +11,7 @@ var bcplayer = (function () {
         streamSenseC2,
         siteTag,
         autoStart,
+        ageRestricted,
         timestamp,
         $bcplayer,
         player,
@@ -29,11 +20,10 @@ var bcplayer = (function () {
         mediaEvent,
         adEvent,
         adModule,
-        authModule,
         cuePointsModule,
         cuePoints = [],
         videoPlayer,
-        video = {bcId:"", duration : 0, isDrm : false, isAuth : false, aisResource : "", aisVideoId: ""},
+        video = {bcId:"", duration : 0, aisVideoId: "", rating: ""},
         videoType,
         adOrd, // unique id used for ad server URL
         adServerUrl = "",
@@ -43,17 +33,9 @@ var bcplayer = (function () {
         isMediaComplete = false,
         currentPosition = 0,
         latestPositions = [0], indexLatestPositions = 0, timeUpdateLatestPositions = 0, // cue points variables
-        forceMidrollPending = false, forceMidrollPosition = 0,
-        lastSavedPosition = 0,
-        seekToPosition = null,
-        vcsInterval = 30,
+        forceMidrollPending = false, forceMidrollPosition = 0, onForcedMidrollCompleted,
         maxPosition = null,
         refId = null,
-        timeLastCheckedPosition = 0,
-        timeLastAuthz = 0,
-        firstAuthz = true,
-        isAuthorized = false,
-        isAuthenticated = false,
         templateReadyDone, 
         comscoreBeacon,
         withLogs = false,
@@ -64,10 +46,6 @@ var bcplayer = (function () {
         getOrd,
         getParam,
         init,
-        onLogoutHandler,
-        onAuthZHandler,
-        onVCSHandler,
-        requestAuthorization,
         onAdStart,
         onAdComplete,
         onMediaBegin,
@@ -78,16 +56,9 @@ var bcplayer = (function () {
         onMediaSeek,
         onMediaComplete,
         onMediaError,
-        saveVideoPosition,
         streamSenseClip,
-        checkDurationAndSave,
-        retrieveVideoPosition,
-        convertToTimecode,
-        convertFromTimecode,
-        onAuthNeeded,
         setAds,
         setGPTAds,
-        checkVideo,
         onTemplateLoaded,
         onTemplateReady,
         onTemplateError,
@@ -97,7 +68,7 @@ var bcplayer = (function () {
         getAPIModules,
         getMediaEvent,
         getAdEvent,
-        triggerAdOnSeek, updateLatestPositions, getBeforeSeekPosition, forceMidroll, logCuePoints,
+        triggerAdOnSeek, updateLatestPositions, getBeforeSeekPosition, forceMidroll, logCuePoints, convertToTimecode,
         log;
 
        // METHODS ======================================================================================================
@@ -127,39 +98,24 @@ var bcplayer = (function () {
 	};
 
     init = function (config) {
-    	
+        withLogs = (getParam("bclogs") === "true");
         log("bcplayer --- init");
         siteTag = config.siteTag;
         videoMetrixC2 = config.videoMetrixC2;
         streamSenseC2 = config.streamSenseC2;
         refId = config.refId;
-        tve = config.tve;
         autoStart = config.autoStart;
+        ageRestricted = config.ageRestricted;
         timestamp = new Date().getTime();
         video = $.extend(video, config.video);
         adSite = config.adSite;
         adPath = config.adPath;
         adPathHTML5 = config.adPathHTML5;
         adOrd = getOrd();
-        withLogs = (getParam("bclogs") === "true");
         gptAdUnit1 = config.gptAdUnit1;
         gptAdUnit2 = config.gptAdUnit2;
         gptAdKeys = config.gptAdKeys;
         videoType = config.videoType;
-
-        log("bcplayer --- ais_client setup :" + config.aisPlatformId);
-        // we need one global JSONP method by ais_client
-        window.bcplayer_aisresponse = function (resp) {
-            ais.aisresponse(resp);
-        };
-
-        ais = new ais_client('bcplayer_aisresponse');
-        ais.setPlatformId(config.aisPlatformId);
-        ais.baseurl = config.baseurl;
-        ais.assignhandler("authz_query", onAuthZHandler);
-        ais.assignhandler("vcs", onVCSHandler);
-        ais.assignhandler('logout_result', onLogoutHandler);
-        ais.setCacheTime('authz_query', 15000);
     };
 
     // debug logging
@@ -174,63 +130,6 @@ var bcplayer = (function () {
         }
     };
 
-    onLogoutHandler = function () {
-        log("bcplayer --- onLogoutHandler");
-        isAuthenticated = false;
-        isAuthorized = false;
-    };
-
-    onAuthZHandler = function (type, response) {
-        log("bcplayer --- authzHandler " + type);
-        isAuthenticated = true;
-        // if user is authorized, pass token to player and start playback
-        if (response.authorization) {
-            isAuthorized = true;
-            if (video.isAuth) {
-                authModule.playWithToken(response.security_token, 'ais');
-            }
-            // dont do the following on subsequent pause/play events
-            if (firstAuthz) {
-                // if auto-play : requires slight delay
-                if (autoStart) {
-                    setTimeout(function () {
-                        videoPlayer.play();
-                    }, 50);
-                }
-                // see if previous position has been saved
-                retrieveVideoPosition();
-                checkDurationAndSave();
-            }
-        // otherwise, report the error
-        } else {
-            console.log("bcplayer --- authz failed");
-            isAuthorized = false;
-        }
-        firstAuthz = false;
-    };
-
-    onVCSHandler = function (type, response) {
-        log("bcplayer --- vcs done : " + response.operation + ", pos :" + response.ph_pos + " " + type);
-        var position;
-        // only interested in position retrieval
-        if (response.operation === "get" && !response.missing) {
-            position = convertFromTimecode(response.ph_pos);
-            // if valid number, set flag so player will seek there once it is ready
-            if (position && !isNaN(position) && position > 0) {
-                seekToPosition = position;
-            }
-        }
-    };
-
-    requestAuthorization = function (resourceId) {
-        // don't fire authz too often
-        var time = new Date().getTime();
-        if ((time - timeLastAuthz) > 3000) {
-            log("bcplayer --- request auzth for :" + resourceId);
-            timeLastAuthz = new Date().getTime();
-            ais.resourceAccess(resourceId);
-        }
-    };
 
     onAdStart = function (event) {
 
@@ -244,12 +143,16 @@ var bcplayer = (function () {
         } else {
             comscoreBeacon("09");
         }
+        
         //Change the clip and notify the ad has started.
         streamSenseClip("1", "0", true, "none");
         streamSense.notify(ns_.StreamSense.PlayerEvents.PLAY, {}, event.position * 1000);
         setAds();
         
-        
+        onForcedMidrollCompleted()
+    };
+    
+    onForcedMidrollCompleted = function (){
         // clearforcedMidroll after it has been played
         if ( forceMidrollPosition > 0 ) {
 
@@ -258,7 +161,22 @@ var bcplayer = (function () {
         	forceMidrollPosition = 0;
 			forceMidrollPending = false;
 			logCuePoints();
-        }
+        }   	
+    };
+
+    // formats seconds into a timecode string that can be consumed by VCS
+    convertToTimecode = function (time) {
+        var hours,
+            minutes,
+            seconds,
+            padDigit = function (digit) {
+                return (digit >= 10) ? digit : "0" + digit;
+            };
+        hours = padDigit(Math.floor(time / 3600));
+        time %= 3600;
+        minutes = padDigit(Math.floor(time / 60));
+        seconds = padDigit(Math.floor(time % 60));
+        return hours + ":" + minutes + ":" + seconds;
     };
 
     onAdComplete = function (event) {
@@ -283,23 +201,6 @@ var bcplayer = (function () {
             streamSenseClip("1", event.duration * 1000, false, event.media.FLVFullLengthURL);
         }
         streamSense.notify(ns_.StreamSense.PlayerEvents.PLAY, {}, event.position * 1000);
-        
-
-    	triggerAdOnSeek(event.position);
-        
-        if (tve) { 
-            checkVideo();
-            if (!maxPosition) {
-                setTimeout(function () {
-                    videoPlayer.getVideoDuration(false, function (res) {
-                        maxPosition = res;
-                        log("bcplayer --- video duration :" + convertToTimecode(res));
-                    });
-                }, 3000);
-            }
-            requestAuthorization(video.aisResource);
-        }
-
     };
 
     onMediaProgress = function (event) {
@@ -315,30 +216,8 @@ var bcplayer = (function () {
         }
         currentPosition = event.position;
         
-        // array of latestPositions so we make to find one < seekPosition
+        // array of latestPositions so we can find one < seekPosition
         updateLatestPositions(currentPosition);
-        
-        if (tve) { 
-	        if (seekToPosition && seekToPosition > 0) {
-	            setTimeout(function () {
-	                if (seekToPosition && seekToPosition > 0) {
-	                    log("bcplayer --- progress, force seek :" + convertToTimecode(seekToPosition));
-	                    videoPlayer.seek(seekToPosition);
-	                    lastSavedPosition = seekToPosition; // to avoid useless VCS set
-	                    seekToPosition = null;
-	                }
-	            }, 50);
-	        }
-	        checkDurationAndSave();
-	        // fire authz every 5min for live stream
-	        if (maxPosition && maxPosition < 0) {
-	            var time = new Date().getTime(),
-	                liveCheckInterval = 300 * 1000;
-	            if ((time - timeLastAuthz) > liveCheckInterval) {
-	                requestAuthorization(video.aisResource);
-	            }
-	        }
-        }
 
     };
     
@@ -346,7 +225,7 @@ var bcplayer = (function () {
     // with 200 ms distance, ex : [2.796, 2.534, 2.29, 2.056, 1.791, 1.49, 1.277, 1.074, 0.851, 0.556, 0.27] 
     updateLatestPositions = function(pos) {
     	var timeNow = new Date().getTime() / 1000;
-    	if ( timeNow - timeUpdateLatestPositions > 0.2 ) {
+    	if ( timeNow - timeUpdateLatestPositions > 0.5 ) {
     		timeUpdateLatestPositions = timeNow;
     		
     		if ( pos  < latestPositions[0] ) {
@@ -367,12 +246,15 @@ var bcplayer = (function () {
     
     // From the latestPositions array, ex : [188.161, 187.916, 2.796, 2.534, 2.29, 2.056, 1.791, 1.49, 1.277, 1.074, 0.851, 0.556, 0.27] 
     // we can say the latestSeekPosition is 2.796
-    getBeforeSeekPosition = function(seekPos) {
-    	for(var i in latestPositions) {
-    		var time = latestPositions[i];
-    		if ( Math.abs(seekPos-time) > 0.5) {
-    			return time;
+    getBeforeSeekPosition = function() {
+    	var max = latestPositions.length-1;
+    	for(var i=0; i< max; i++) {
+    		var n1Pos = latestPositions[i];
+    		var n2Pos = latestPositions[i+1];
+    		if ( Math.abs(n1Pos-n2Pos) > 1) {
+    			return n2Pos;
     		}
+    		seekPos
     	}
     	return 0;
     };
@@ -380,29 +262,16 @@ var bcplayer = (function () {
     onMediaStop = function (event) {
         isPlaying = false;
         streamSense.notify(ns_.StreamSense.PlayerEvents.PAUSE, {}, event.position * 1000);
-        
-        if (tve) { 
-	        currentPosition = event.position;
-	        checkDurationAndSave();
-        }
-
     };
 
     onMediaChange = function () {
-        
-        if (tve) {  
-	        checkVideo();
-	        currentPosition = 0;
-	        lastSavedPosition = 0;
-	        if (video.isAuth === true) {
-	            seekToPosition = null;
-	            requestAuthorization(video.aisResource);
-	        }
-        }
 
     };
 
     onMediaSeek = function (event) {
+    	
+    	log(" === onMediaSeek ==== latestPositions :" + latestPositions);
+    	
         if (!isMediaComplete && isPlaying){
         	
         	triggerAdOnSeek(event.position);
@@ -415,10 +284,12 @@ var bcplayer = (function () {
     
     triggerAdOnSeek = function(seekPos) {
     	
+    	log("=== triggerAdOnSeek === , forceMidrollPending : " + forceMidrollPending);
     	if ( forceMidrollPending ) return;
     	
-    	var beforePos = getBeforeSeekPosition(seekPos);
-    	if ( seekPos > beforePos) {
+    	var beforePos = getBeforeSeekPosition();
+    	
+    	if ( seekPos > beforePos && beforePos > 0 ) {
     		for (var i in cuePoints) {
     			var cueTime = cuePoints[i].time;
     			if ( beforePos < cueTime && cueTime < seekPos) {
@@ -431,8 +302,14 @@ var bcplayer = (function () {
     };
     
     forceMidroll = function(pos) {
-    	forceMidrollPosition = pos+1;
+    	forceMidrollPosition = pos + 0.2 ;
 		log("Force midroll ads / at :" + convertToTimecode(forceMidrollPosition) );
+		
+		// if the adServer fail to return a VAST xml
+		// we have a fallback to cleanup the forced cuepoint
+		setTimeout(function(){
+			onForcedMidrollCompleted();
+		},2000);
 	
     	var cuePoints = [{name:"forcedCuePoint",time:forceMidrollPosition, type:0}];
     	cuePointsModule.addCuePoints(video.bcId, cuePoints);
@@ -461,80 +338,9 @@ var bcplayer = (function () {
         streamSense.notify(ns_.StreamSense.PlayerEvents.END, {}, event.position * 1000);
     };
 
-    // saves the lastPosition recorded to VCS
-    saveVideoPosition = function (position) {
-        if (position <= 0) {
-            return;
-        }
-        log("bcplayer --- saveVideoPosition  :" + convertToTimecode(Math.round(position)));
-        lastSavedPosition = position;
-        ais.vcsSet(video.aisVideoId, convertToTimecode(Math.round(position)));
-    };
-
-    checkDurationAndSave = function () {
-        // don't save position for short videos or live stream (maxPosition=-1 for live)
-        if (!(maxPosition && (maxPosition > (vcsInterval * 2)))) { return; }
-        // check only every 1 second
-        var time = new Date().getTime(),
-            delta = Math.abs(currentPosition - lastSavedPosition),
-            timeToEnd;
-        if ((time - timeLastCheckedPosition) < 1000) { return; }
-        timeLastCheckedPosition =  new Date().getTime();
-        // save only <vcsInterval> seconds after latest save
-        if (delta >= vcsInterval) {
-            timeToEnd = maxPosition - currentPosition;
-            // if video ends within 30s force ph_pos to 0
-            if (timeToEnd < vcsInterval && timeToEnd >= 0) {
-                log(" bcplayer --- timeToEnd : " + timeToEnd);
-                lastSavedPosition = currentPosition;
-                ais.vcsSet(video.aisVideoId, convertToTimecode(0));
-            } else if (currentPosition > vcsInterval) {
-                saveVideoPosition(currentPosition);
-            }
-        }
-    };
-
-    // retrieves last viewed position from VCS
-    retrieveVideoPosition = function () {
-        log("bcplayer --- retrieve vcs for :" + video.aisVideoId + " isAuthorized :" + isAuthorized);
-        if (isAuthorized) {
-            ais.vcsGet(video.aisVideoId);
-        }
-    };
-
-    // formats seconds into a timecode string that can be consumed by VCS
-    convertToTimecode = function (time) {
-        var hours,
-            minutes,
-            seconds,
-            padDigit = function (digit) {
-                return (digit >= 10) ? digit : "0" + digit;
-            };
-        hours = padDigit(Math.floor(time / 3600));
-        time %= 3600;
-        minutes = padDigit(Math.floor(time / 60));
-        seconds = padDigit(Math.floor(time % 60));
-        return hours + ":" + minutes + ":" + seconds;
-    };
-
-    // formats seconds into a timecode string that can be consumed by VCS
-    convertFromTimecode = function (timecode) {
-        var time = timecode.split(":");
-        return parseInt(time[0], 10) * 3600 + parseInt(time[1], 10) * 60 + parseInt(time[2], 10);
-    };
-
-    // called when player attempts to play video that requires auth access and hasn't been given token
-    onAuthNeeded = function (event) {
-        log("bcplayer --- onAuthNeeded");
-        if (event.type === 'authNeeded') {
-            log("bcplayer --- onAuthNeeded : " + event.resourceId);
-            requestAuthorization(event.resourceId);
-        }
-    };
-
     setAds = function () {
     	// no ads for kids...
-        if (userAge === "under12" || videoType == "Bandes-annonces") { return; }
+        if ( ( typeof userAge != 'undefined' && userAge === "under12" ) || videoType == "Bandes-annonces") { return; }
 
         //var sz = (video.duration < 300) ? "9x9" : "9x10";
         var sz = "9x10";
@@ -554,25 +360,11 @@ var bcplayer = (function () {
         
         var adPolicy = {};
         adPolicy.adServerURL = adServerUrl;
-        adPolicy.prerollAds = false;//true;
+        adPolicy.prerollAds = true;
         adPolicy.playerAdKeys = gptAdKeys;
         adPolicy.adPlayCap = (video.duration < 300) ? 1 : 2;
         adPolicy.midrollAds = true;
         adModule.setAdPolicy(adPolicy);
-    };
-
-    checkVideo = function () {
-        if (video.isAuth) {
-            if (isAuthenticated && !isAuthorized) {
-                log(" bcplayer --- ERROR_NOT_AUTHORIZED");
-                trigger(Events.ERROR_NOT_AUTHZ);
-                videoPlayer.pause(true);
-            } else if (!isAuthenticated) {
-                log(" bcplayer --- ERROR_NOT_AUTHENTICATED");
-                trigger(Events.ERROR_NOT_AUTHN);
-                videoPlayer.pause(true);
-            }
-        }
     };
 
     //====== public methods =======//
@@ -583,29 +375,34 @@ var bcplayer = (function () {
         playerType = player.type;
         APIModules = brightcove.api.modules.APIModules;
         mediaEvent = brightcove.api.events.MediaEvent;
-        authModule = player.getModule(APIModules.AUTH);
         adEvent = brightcove.api.events.AdEvent;
         adModule = player.getModule(APIModules.ADVERTISING);
         cuePointsModule = player.getModule(APIModules.CUE_POINTS);
+        log("bcplayer --- setAds");
         setAds();
-
         //comScore StreamSense Analytics
         streamSense = new ns_.StreamSense({}, 'http://b.scorecardresearch.com/p?c1=2&c2=' + streamSenseC2 + "&c3=" + siteTag);
         streamSense.setPlaylist();
     };
 
     onTemplateReady = function () {
-        if (templateReadyDone) { return; }
+        if (templateReadyDone) {
+            log("bcplayer --- onTemplateReadyDone");
+            return;
+        }
+        
+        log("bcplayer --- ageRestricted: " + ageRestricted + ", video rating: " + video.rating);
+        if (ageRestricted && video.rating == "13+" && ( typeof userAge != 'undefined' && userAge === "under12" )) {
+            log("bcplayer --- User is under 12 don't display video player");
+            $("img#ageRatingWarning").show();
+            $('div.playerContainer').remove();
+            return;
+        }
+
         log("bcplayer --- onTemplateReady");
         templateReadyDone = true;
         videoPlayer = player.getModule(APIModules.VIDEO_PLAYER);
         
-        // show stopper...
-        if (playerType === "html" && video.isDrm) {
-            log("drm not playable on html5");
-            trigger(Events.DRM_WITH_HTML5);
-            return;
-        }
         if (playerType === "html") {
             adPath = adPathHTML5;
             adSite = adSite + "html5";
@@ -629,10 +426,10 @@ var bcplayer = (function () {
         });
 
 
-        // events for advertisement
+        // ad events
         adModule.addEventListener(adEvent.START, onAdStart);
         adModule.addEventListener(adEvent.COMPLETE, onAdComplete);
-        // events for VCS
+        // player events
         videoPlayer.addEventListener(mediaEvent.BEGIN, onMediaBegin);
         videoPlayer.addEventListener(mediaEvent.STOP, onMediaStop);
         videoPlayer.addEventListener(mediaEvent.PLAY, onMediaPlay);
@@ -640,20 +437,13 @@ var bcplayer = (function () {
         videoPlayer.addEventListener(mediaEvent.SEEK_NOTIFY, onMediaSeek);
         videoPlayer.addEventListener(mediaEvent.ERROR, onMediaError);
         videoPlayer.addEventListener(mediaEvent.COMPLETE, onMediaComplete);
-        
-        if (tve) {
-            authModule.addEventListener(brightcove.api.events.AuthEvent.AUTH_NEEDED, onAuthNeeded);
-            seekToPosition = null;
-            requestAuthorization(video.aisResource); 
-        }
-
 
         // responsive and resize
         videoPlayer.getCurrentRendition(function (renditionDTO) {
             var newPercentage = (renditionDTO.frameHeight / renditionDTO.frameWidth) * 100;
             newPercentage = newPercentage + "%";
             
-            if ( $(".playerContainer").length>0 ) {
+            if ( $(".playerContainer").length>0 && (typeof $(".playerContainer").style !== 'undefined' ) ) {
                 $(".playerContainer").style.paddingBottom = newPercentage;
             }
         });
@@ -741,7 +531,6 @@ var bcplayer = (function () {
         onTemplateLoaded : onTemplateLoaded,
         onTemplateReady : onTemplateReady,
         onTemplateError : onTemplateError,
-        Events : Events,
         bind : bind,
         getAdStarted: getAdStarted,
         getIsMidroll: getIsMidroll,
