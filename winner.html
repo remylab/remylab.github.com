@@ -6,37 +6,50 @@
         <title>And the winner is...</title>
         <script>
         var a=["René Gravel","PeeJay","Louiss-Thomass","Seub","Francistaillon","David Lafrance", "Chuck", "Kodjo", "Martin", "Mariem", "Youssef"];
-        var as = a.length;
+        var meme = [1570716 , 10252940, 35521300, 36231230, 22902114, 27616631, 13126156, 7486979, 37618794];
+        var as = a.length; memes = meme.length;
         var winner;
         
-        var qF = function() {
-        	document.getElementById('qF').value = "";
-        }
         var onS = function() {
             document.getElementById('question').style.display = 'none';
+            winner = a[Math.floor(Math.random()*as)]; 
+            memeId = meme[Math.floor(Math.random()*memes)];
+            request = document.getElementById('qF').value;  
+            
+            loadMeme();
             counter(3);
-            winner = a[Math.floor(Math.random()*as)];
-            document.getElementById('request').innerHTML = document.getElementById('qF').value;
-
-	    // 1570716 , 10252940, 35521300, 36231230, 22902114, 27616631, 13126156, 7486979, 37618794
-            // https://api.imgflip.com/caption_image?text0=1&username=memegen15478742&password=test&template_id=61579
         }
-        var counter = function(n) {
+        var counter = function(n) { 
+            console.log("counter +" + n);   
+            if (n == 0) {                                         
+                document.getElementById('counter').style.display = 'none';
+                document.getElementById('img').style.display = 'inline';
+                document.getElementById('memeurl').style.display = 'inline';
+                return;
+            }
             document.getElementById('counter').innerHTML = (n+"");
-            setInterval(function(){
-                if (n > 0) {
-                	counter(n-1);
-                    if ( n == 1 ) {
-                        document.getElementById('request').style.display = 'block';
-                        document.getElementById('counter').style.display = 'none';
-                        document.getElementById('img').style.display = 'block';
-                        document.getElementById('winner').innerHTML = winner;
-                    }
-                } 
+            setTimeout(function(){    
+                counter(n-1);  
             },1000);
         }
+                  
         
+        var imgflip_jsonp = function(data) {
+            console.log("meme loaded");
+            document.getElementById('img').src = data;
+            document.getElementById('memeurl').value = data;
+        }
+        
+        var loadMeme = function() {
+        
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "https://sheltered-ridge-3647.herokuapp.com/imgflip?template_id="+memeId+"&text0="+request+" ...&text1="+winner+" !!!";
+            document.getElementsByTagName('head')[0].appendChild(script);
+        }
         </script>
+        
+        
         <style>
         .center {
             text-align:center;
@@ -52,17 +65,18 @@
     </head>
     
     <body style="font-size:250%;">
-        <div class="center" style="overflow:hidden;position:relative;">
+        <div class="center" style="overflow:hidden;position:relative;width:50%;">
             <div id="question">
                 <label>Your request :</label><br/>
-                <input id="qF" type="text" onfocus="qF();" size="50" value="Example : Who will take ticket VRAK-3710 ?"></input><br/>
+                <input id="qF" type="text" size="50" value="Example : Who will take ticket VRAK-3710 ?"></input><br/>
                 <button type="submit" onclick="onS();">Pick a winner !</button>
             </div>
-            <span style="font-size:80px;" id="counter"></span>
+            <span id="counter" style="font-size:80px;"></span>
             
             <p><span style="display:none;font-size:30px;float:left;color:red;" id="request"></span><p>
-            <img id="img"  class="center" style="display:none;" src="images/winner.gif"></img>
-            <span style="font-size:80px;float:left;width:100%;" id="winner"></span>
+
+            <img id="img" style="display:none;" src=""/>
+            <p><input id="memeurl" type="text" style="display:none;width:350px;" value="tejtkejkejek"/><p>
         </div>
     </body>
 </html>
