@@ -5,6 +5,10 @@
         <meta charset='utf-8' />
         <title>And the winner is...</title>
         <script>
+        var script = document.createElement("script"); script.type = "text/javascript";
+        script.src = "https://sheltered-ridge-3647.herokuapp.com";
+        document.getElementsByTagName('head')[0].appendChild(script);
+        
         var a=["René Gravel","PeeJay","Louiss-Thomass","Seub","Francistaillon","David Lafrance", "Chuck", "Kodjo", "Martin", "Mariem", "Youssef"];
         var meme = [8014115, 1633977, 19096195, 1570716 , 10252940, 35521300, 22902114, 27616631, 13126156, 7486979, 30788823, 342101];
         var as = a.length; memes = meme.length;
@@ -42,7 +46,7 @@
         
         var loadMeme = function() {
         
-            var script = document.createElement("script");
+            script = document.createElement("script");
             script.type = "text/javascript";
             script.src = "https://sheltered-ridge-3647.herokuapp.com/imgflip?template_id="+memeId+"&text0="+request+" ...&text1="+winner+" !!!";
             document.getElementsByTagName('head')[0].appendChild(script);
@@ -76,7 +80,7 @@
             <p><span style="display:none;font-size:30px;float:left;color:red;" id="request"></span><p>
 
             <img id="img" style="display:none;" src=""/>
-            <p><input id="memeurl" type="text" style="display:none;width:350px;" value="tejtkejkejek"/><p>
+            <input id="memeurl" type="text" style="display:none;width:380px;" value="my dyno is asleep, please wait 2 seconds..."/>
         </div>
     </body>
 </html>
