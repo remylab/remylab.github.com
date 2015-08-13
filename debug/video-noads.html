@@ -2,32 +2,6 @@
 <head>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 	<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
-    <script type="text/javascript" src="bcplayer.js"></script>
-    <script type="text/javascript">
-                                
-        var gptAdKeys = "showid%3D" + "1-1197877" + "%26" + "showname%3D" + "mayday";
-        if( typeof Krux !== "undefined"){
-            gptAdKeys += "%26" + "u%3D" + Krux.user ;
-        }
-
-        bcplayer.init({
-            videoMetrixC2: "3005664",
-            streamSenseC2: "16433042",
-            siteTag: "CANALD",
-            autoStart:true,
-            ageRestricted:false,
-            refId: "D0143159_0101ACH",
-            video: {
-                duration:0,
-                rating: "G"
-            },
-            videoType: "Épisodes complets",
-            gptAdUnit1: "/5479/sri.canald",
-            gptAdUnit2: "webtele",
-            gptAdKeys: gptAdKeys
-        });
-
-    </script>
 
 	<!-- VERSION LIGHT script type="text/javascript">
 	   var FBC = {};   
@@ -78,8 +52,8 @@
 	    <param name="wmode" value="transparent" />       
 	    <param name="@videoPlayer" value="ref:D0050488_0101AGH" />
 	    <param name="includeAPI" value="true" />
-        <param name="templateLoadHandler" value="bcplayer.onTemplateLoaded" />
-        <param name="templateReadyHandler" value="bcplayer.onTemplateReady" />
+        <param name="templateLoadHandler" value="FBC.onTemplateLoaded" />
+        <param name="templateReadyHandler" value="FBC.onTemplateReady" />
 	</object>
 </div>
 
