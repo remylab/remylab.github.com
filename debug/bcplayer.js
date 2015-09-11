@@ -10,7 +10,6 @@ var bcplayer = (function () {
         videoMetrixC2,
         streamSenseC2,
         siteTag,
-        autoStart,
         ageRestricted,
         timestamp,
         $bcplayer,
@@ -104,7 +103,6 @@ var bcplayer = (function () {
         videoMetrixC2 = config.videoMetrixC2;
         streamSenseC2 = config.streamSenseC2;
         refId = config.refId;
-        autoStart = config.autoStart;
         ageRestricted = config.ageRestricted;
         timestamp = new Date().getTime();
         video = $.extend(video, config.video);
@@ -360,7 +358,7 @@ var bcplayer = (function () {
         
         var adPolicy = {};
         adPolicy.adServerURL = adServerUrl;
-        adPolicy.prerollAds = true;
+        adPolicy.prerollAds = false;
         adPolicy.playerAdKeys = gptAdKeys;
         adPolicy.adPlayCap = (video.duration < 300) ? 1 : 2;
         adPolicy.midrollAds = true;
