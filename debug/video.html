@@ -7,9 +7,6 @@
     <script type="text/javascript">
                                 
         var gptAdKeys = "showid%3D" + "1-1197877" + "%26" + "showname%3D" + "mayday";
-        if( typeof Krux !== "undefined"){
-            gptAdKeys += "%26" + "u%3D" + Krux.user ;
-        }
 
         bcplayer.init({
             videoMetrixC2: "3005664",
@@ -23,19 +20,9 @@
                 rating: "G"
             },
             videoType: "Épisodes complets",
-            gptAdUnit1: "/5479/sri.canald",
+            gptAdUnit1: "/5479/sri.canalvie",
             gptAdUnit2: "webtele",
             gptAdKeys: gptAdKeys
-        });
-
-        $(document).on("tveMobileReady", function (e, tveMobile) {
-            var height = tveMobile.getPlayerHeight(449, 230);
-            var width = tveMobile.getPlayerWidth(796, 370);
-
-                    if (height !== 449 || width !== 796) {
-                $("#myExperience3450496672001").attr("width", width);
-                $("#myExperience3450496672001").attr("height", height);
-            }
         });
     </script>
 
