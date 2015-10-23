@@ -1,6 +1,6 @@
 /*jslint devel: true, browser: true, node: true*/
 /*global ais_client, $, brightcove */
-var bcplayer = (function () {
+var bcplayer = (function() {
     "use strict";
     var isAfterMidroll = false,
         isPlaying = false,
@@ -10,6 +10,7 @@ var bcplayer = (function () {
         videoMetrixC2,
         streamSenseC2,
         siteTag,
+        autoStart,
         ageRestricted,
         timestamp,
         $bcplayer,
@@ -22,24 +23,37 @@ var bcplayer = (function () {
         cuePointsModule,
         cuePoints = [],
         videoPlayer,
-        video = {bcId:"", duration : 0, aisVideoId: "", rating: ""},
+        video = {
+            bcId: "",
+            duration: 0,
+            aisVideoId: "",
+            rating: ""
+        },
         videoType,
         adOrd, // unique id used for ad server URL
         adServerUrl = "",
-        // ads
+    // ads
         adSite, adPath, adPathHTML5, gptAdUnit1, gptAdUnit2, gptAdKeys,
-        adStarted = false, isMidroll = false,// more variable to handle ads...
+        adStarted = false,
+        isMidroll = false, // more variable to handle ads...
         isMediaComplete = false,
         currentPosition = 0,
-        latestPositions = [0], indexLatestPositions = 0, timeUpdateLatestPositions = 0, // cue points variables
-        forceMidrollPending = false, forceMidrollPosition = 0, onForcedMidrollCompleted,
+        latestPositions = [0],
+        indexLatestPositions = 0,
+        timeUpdateLatestPositions = 0, // cue points variables
+        forceMidrollPending = false,
+        forceMidrollPosition = 0,
+        onForcedMidrollCompleted,
         maxPosition = null,
         refId = null,
-        templateReadyDone, 
+        templateReadyDone,
         comscoreBeacon,
-        withLogs = false,
+        withLogs = true,
+        currentVideoIndex, //next video list index
+        videoArray = [], //next video list array
 
-        // METHODS DECLARATION ==========================================================================================
+
+    // METHODS DECLARATION ==========================================================================================
         bind,
         trigger,
         getOrd,
@@ -67,42 +81,45 @@ var bcplayer = (function () {
         getAPIModules,
         getMediaEvent,
         getAdEvent,
-        triggerAdOnSeek, updateLatestPositions, getBeforeSeekPosition, forceMidroll, logCuePoints, convertToTimecode,
+        triggerAdOnSeek, updateLatestPositions, getBeforeSeekPosition, forceMidroll, logCuePoints, convertToTimecode,displayNextVideoTitle,
+        loadVideo,
+        getCurrentVideoIndex,
         log;
 
-       // METHODS ======================================================================================================
-    bind = function () {
+    // METHODS ======================================================================================================
+    bind = function() {
         if (!$bcplayer) {
             $bcplayer = $(bcplayer);
         }
         $bcplayer.bind.apply($bcplayer, arguments);
     };
 
-    trigger = function (event) {
+    trigger = function(event) {
         if (!$bcplayer) {
             $bcplayer = $(bcplayer);
         }
         $bcplayer.trigger(event);
     };
 
-   //====== private methods =======//
-    getOrd = function () {
+    //====== private methods =======//
+    getOrd = function() {
         return Math.round(Math.random() * 100000000000);
     };
-    
-    getParam = function(name){
-	   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) {
-		      return decodeURIComponent(name[1]);
-	   }
-	};
 
-    init = function (config) {
+    getParam = function(name) {
+        if (name = (new RegExp('[?&]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search)) {
+            return decodeURIComponent(name[1]);
+        }
+    };
+
+    init = function(config) {
         withLogs = (getParam("bclogs") === "true");
         log("bcplayer --- init");
         siteTag = config.siteTag;
         videoMetrixC2 = config.videoMetrixC2;
         streamSenseC2 = config.streamSenseC2;
         refId = config.refId;
+        autoStart = config.autoStart;
         ageRestricted = config.ageRestricted;
         timestamp = new Date().getTime();
         video = $.extend(video, config.video);
@@ -114,13 +131,15 @@ var bcplayer = (function () {
         gptAdUnit2 = config.gptAdUnit2;
         gptAdKeys = config.gptAdKeys;
         videoType = config.videoType;
+        currentVideoIndex = config.currentVideoIndex;
+        videoArray = config.videoArray;
     };
 
     // debug logging
-    log = function (message) {
+    log = function(message) {
 
-    	if ( !withLogs) return;
-    	
+        if (!withLogs) return;
+
         if (window.console) {
             console.log(message);
         } else {
@@ -129,7 +148,7 @@ var bcplayer = (function () {
     };
 
 
-    onAdStart = function (event) {
+    onAdStart = function(event) {
 
         adStarted = true;
 
@@ -141,33 +160,32 @@ var bcplayer = (function () {
         } else {
             comscoreBeacon("09");
         }
-        
+
         //Change the clip and notify the ad has started.
         streamSenseClip("1", "0", true, "none");
         streamSense.notify(ns_.StreamSense.PlayerEvents.PLAY, {}, event.position * 1000);
-        setAds();
-        
+
         onForcedMidrollCompleted()
     };
-    
-    onForcedMidrollCompleted = function (){
-        // clearforcedMidroll after it has been played
-        if ( forceMidrollPosition > 0 ) {
 
-            log("bcplayer --- remove forcedMidroll cuePoint : " + convertToTimecode(forceMidrollPosition) );
-        	cuePointsModule.removeAdCuePointsAtTime(video.bcId, forceMidrollPosition);
-        	forceMidrollPosition = 0;
-			forceMidrollPending = false;
-			logCuePoints();
-        }   	
+    onForcedMidrollCompleted = function() {
+        // clearforcedMidroll after it has been played
+        if (forceMidrollPosition > 0) {
+
+            log("bcplayer --- remove forcedMidroll cuePoint : " + convertToTimecode(forceMidrollPosition));
+            cuePointsModule.removeAdCuePointsAtTime(video.bcId, forceMidrollPosition);
+            forceMidrollPosition = 0;
+            forceMidrollPending = false;
+            logCuePoints();
+        }
     };
 
     // formats seconds into a timecode string that can be consumed by VCS
-    convertToTimecode = function (time) {
+    convertToTimecode = function(time) {
         var hours,
             minutes,
             seconds,
-            padDigit = function (digit) {
+            padDigit = function(digit) {
                 return (digit >= 10) ? digit : "0" + digit;
             };
         hours = padDigit(Math.floor(time / 3600));
@@ -177,11 +195,11 @@ var bcplayer = (function () {
         return hours + ":" + minutes + ":" + seconds;
     };
 
-    onAdComplete = function (event) {
+    onAdComplete = function(event) {
         streamSense.notify(ns_.StreamSense.PlayerEvents.END, {}, event.position * 1000);
     };
 
-    onMediaBegin = function (event) {
+    onMediaBegin = function(event) {
         isMidroll = true;
         isMediaComplete = false;
         if (event.duration > 600) {
@@ -191,7 +209,7 @@ var bcplayer = (function () {
         }
     };
 
-    onMediaPlay = function (event) {
+    onMediaPlay = function(event) {
         isPlaying = true;
         if (mediaClip === undefined) {
             //Set the media as the current clip and notify the first part has started.
@@ -201,164 +219,193 @@ var bcplayer = (function () {
         streamSense.notify(ns_.StreamSense.PlayerEvents.PLAY, {}, event.position * 1000);
     };
 
-    onMediaProgress = function (event) {
-        if (adStarted) {
-            setAds();
-        }
-        adStarted = false;
+    onMediaProgress = function(event) {
+
         if (isAfterMidroll) {
-          //Set the second part of the media as the current clip
+            //Set the second part of the media as the current clip
             streamSenseClip("2", event.duration * 1000, false, event.media.FLVFullLengthURL);
             streamSense.notify(ns_.StreamSense.PlayerEvents.PLAY, {}, event.position * 1000);
             isAfterMidroll = false;
         }
         currentPosition = event.position;
-        
+
         // array of latestPositions so we can find one < seekPosition
         updateLatestPositions(currentPosition);
 
-    };
-    
-    // latestPositions is an array of the 20 latest position 
-    // with 200 ms distance, ex : [2.796, 2.534, 2.29, 2.056, 1.791, 1.49, 1.277, 1.074, 0.851, 0.556, 0.27] 
-    updateLatestPositions = function(pos) {
-    	var timeNow = new Date().getTime() / 1000;
-    	if ( timeNow - timeUpdateLatestPositions > 0.5 ) {
-    		timeUpdateLatestPositions = timeNow;
-    		
-    		if ( pos  < latestPositions[0] ) {
-    			latestPositions = [0];
-    			return;
-    		}
-    		
-        	latestPositions[indexLatestPositions] = Math.round(pos * 100) / 100;
-        	indexLatestPositions += 1;
-        	if ( indexLatestPositions > 10) {
-        		indexLatestPositions = 0;
-        	}
-        	
-        	latestPositions.sort(function(n1,n2){return n2 - n1});
-    		
-    	}
-    };
-    
-    // From the latestPositions array, ex : [188.161, 187.916, 2.796, 2.534, 2.29, 2.056, 1.791, 1.49, 1.277, 1.074, 0.851, 0.556, 0.27] 
-    // we can say the latestSeekPosition is 2.796
-    getBeforeSeekPosition = function() {
-    	var max = latestPositions.length-1;
-    	for(var i=0; i< max; i++) {
-    		var n1Pos = latestPositions[i];
-    		var n2Pos = latestPositions[i+1];
-    		if ( Math.abs(n1Pos-n2Pos) > 1) {
-    			return n2Pos;
-    		}
-    		seekPos
-    	}
-    	return 0;
+        //TODO uncomment when div#id will be done on mockups to display next video Title
+        displayNextVideoTitle(event.position, event.duration)
+
     };
 
-    onMediaStop = function (event) {
+    //TODO div#id set to label... maybe change it
+    displayNextVideoTitle = function(pos, dur){
+        var nextVideoTitle;
+        if ( (dur - pos) < 10 ) {
+
+            if(currentVideoIndex < videoArray.length){
+                $("div.next-media-caption").show(800);
+
+                //set new Video
+                nextVideoTitle = videoArray[currentVideoIndex].title;
+                $("em.next-title").html(nextVideoTitle);
+            }
+        }else{
+            $(".next-media-caption").hide(800);
+            $("em.next-title").html("");
+        }
+    };
+
+    // latestPositions is an array of the 20 latest position
+    // with 200 ms distance, ex : [2.796, 2.534, 2.29, 2.056, 1.791, 1.49, 1.277, 1.074, 0.851, 0.556, 0.27]
+    updateLatestPositions = function(pos) {
+        var timeNow = new Date().getTime() / 1000;
+        if (timeNow - timeUpdateLatestPositions > 0.5) {
+            timeUpdateLatestPositions = timeNow;
+
+            if (pos < latestPositions[0]) {
+                latestPositions = [0];
+                return;
+            }
+
+            latestPositions[indexLatestPositions] = Math.round(pos * 100) / 100;
+            indexLatestPositions += 1;
+            if (indexLatestPositions > 10) {
+                indexLatestPositions = 0;
+            }
+
+            latestPositions.sort(function(n1, n2) {
+                return n2 - n1
+            });
+
+        }
+    };
+
+    // From the latestPositions array, ex : [188.161, 187.916, 2.796, 2.534, 2.29, 2.056, 1.791, 1.49, 1.277, 1.074, 0.851, 0.556, 0.27]
+    // we can say the latestSeekPosition is 2.796
+    getBeforeSeekPosition = function() {
+        var max = latestPositions.length - 1;
+        for (var i = 0; i < max; i++) {
+            var n1Pos = latestPositions[i];
+            var n2Pos = latestPositions[i + 1];
+            if (Math.abs(n1Pos - n2Pos) > 1) {
+                return n2Pos;
+            }
+            seekPos
+        }
+        return 0;
+    };
+
+    onMediaStop = function(event) {
         isPlaying = false;
         streamSense.notify(ns_.StreamSense.PlayerEvents.PAUSE, {}, event.position * 1000);
     };
 
-    onMediaChange = function () {
-
+    onMediaChange = function() {
+       setAds();
     };
 
-    onMediaSeek = function (event) {
-    	
-    	log(" === onMediaSeek ==== latestPositions :" + latestPositions);
-    	
-        if (!isMediaComplete && isPlaying){
-        	
-        	triggerAdOnSeek(event.position);
-            
+    onMediaSeek = function(event) {
+
+        log(" === onMediaSeek ==== latestPositions :" + latestPositions);
+
+        if (!isMediaComplete && isPlaying) {
+
+            triggerAdOnSeek(event.position);
+
             //Stop the stream at the last currentPosition and start it again at seeked position.
             streamSense.notify(ns_.StreamSense.PlayerEvents.PAUSE, {}, currentPosition * 1000);
             streamSense.notify(ns_.StreamSense.PlayerEvents.PLAY, {}, event.position * 1000);
         }
     };
-    
+
     triggerAdOnSeek = function(seekPos) {
-    	
-    	log("=== triggerAdOnSeek === , forceMidrollPending : " + forceMidrollPending);
-    	if ( forceMidrollPending ) return;
-    	
-    	var beforePos = getBeforeSeekPosition();
-    	
-    	if ( seekPos > beforePos && beforePos > 0 ) {
-    		for (var i in cuePoints) {
-    			var cueTime = cuePoints[i].time;
-    			if ( beforePos < cueTime && cueTime < seekPos) {
-    				forceMidrollPending = true;
-    				forceMidroll(seekPos);
-    				return;
-    			}
-    		}
-    	}
+
+        log("=== triggerAdOnSeek === , forceMidrollPending : " + forceMidrollPending);
+        if (forceMidrollPending) return;
+
+        var beforePos = getBeforeSeekPosition();
+
+        if (seekPos > beforePos && beforePos > 0) {
+            for (var i in cuePoints) {
+                var cueTime = cuePoints[i].time;
+                if (beforePos < cueTime && cueTime < seekPos) {
+                    forceMidrollPending = true;
+                    forceMidroll(seekPos);
+                    return;
+                }
+            }
+        }
     };
-    
+
     forceMidroll = function(pos) {
-    	forceMidrollPosition = pos + 0.2 ;
-		log("Force midroll ads / at :" + convertToTimecode(forceMidrollPosition) );
-		
-		// if the adServer fail to return a VAST xml
-		// we have a fallback to cleanup the forced cuepoint
-		setTimeout(function(){
-			onForcedMidrollCompleted();
-		},2000);
-	
-    	var cuePoints = [{name:"forcedCuePoint",time:forceMidrollPosition, type:0}];
-    	cuePointsModule.addCuePoints(video.bcId, cuePoints);
-		
-    	logCuePoints();
+        forceMidrollPosition = pos + 0.2;
+        log("Force midroll ads / at :" + convertToTimecode(forceMidrollPosition));
+
+        // if the adServer fail to return a VAST xml
+        // we have a fallback to cleanup the forced cuepoint
+        setTimeout(function() {
+            onForcedMidrollCompleted();
+        }, 2000);
+
+        var cuePoints = [{
+            name: "forcedCuePoint",
+            time: forceMidrollPosition,
+            type: 0
+        }];
+        cuePointsModule.addCuePoints(video.bcId, cuePoints);
+
+        logCuePoints();
     };
-    
-    logCuePoints = function(){
-    	log(" === LOG cuePoints from cuePointsModule.getCuePoints");
-    	if ( withLogs ) {
-        	cuePointsModule.getCuePoints(video.bcId, function(result){
-        		for(var data in result){
-        			var cuepoint = result[data];
-        			log(cuepoint.name + " : " +convertToTimecode(cuepoint.time));
-        		}
-        	});
-    	}
+
+    logCuePoints = function() {
+        log(" === LOG cuePoints from cuePointsModule.getCuePoints");
+        if (withLogs) {
+            cuePointsModule.getCuePoints(video.bcId, function(result) {
+                for (var data in result) {
+                    var cuepoint = result[data];
+                    log(cuepoint.name + " : " + convertToTimecode(cuepoint.time));
+                }
+            });
+        }
     }
 
-    onMediaError = function (event) {
+    onMediaError = function(event) {
         streamSense.notify(ns_.StreamSense.PlayerEvents.END, {}, event.position * 1000);
     };
 
-    onMediaComplete = function (event) {
+    onMediaComplete = function(event) {
         isMediaComplete = true;
+        loadVideo();
         streamSense.notify(ns_.StreamSense.PlayerEvents.END, {}, event.position * 1000);
     };
 
-    setAds = function () {
-    	// no ads for kids...
-        if ( ( typeof userAge != 'undefined' && userAge === "under12" ) || videoType == "Bandes-annonces") { return; }
+    setAds = function() {
+        // no ads for kids...
+        if ((typeof userAge != 'undefined' && userAge === "under12") || videoType == "Bandes-annonces") {
+            return;
+        }
 
         //var sz = (video.duration < 300) ? "9x9" : "9x10";
         var sz = "9x10";
-
-        if (playerType === "html") {
+        
+        if (playerType === "html" && (gptAdUnit1.indexOf("html5") == -1) ) {
             gptAdUnit1 += "html5";
+        	log("setup html5 adUnit :" + gptAdUnit1);
         }
 
         var gptAdUnit = gptAdUnit1 + "/" + gptAdUnit2;
-        
+
         if (isMidroll) {
             gptAdUnit += "/midroll";
         }
-
-        adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + gptAdUnit
-            + "&sz=" + sz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
         
+        log("final adUnit :" + gptAdUnit);
+        
+        adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + gptAdUnit + "&sz=" + sz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
+
         var adPolicy = {};
         adPolicy.adServerURL = adServerUrl;
-        adPolicy.prerollAds = false;
+        adPolicy.prerollAds = true;
         adPolicy.playerAdKeys = gptAdKeys;
         adPolicy.adPlayCap = (video.duration < 300) ? 1 : 2;
         adPolicy.midrollAds = true;
@@ -366,7 +413,7 @@ var bcplayer = (function () {
     };
 
     //====== public methods =======//
-    onTemplateLoaded = function (experienceID) {
+    onTemplateLoaded = function(experienceID) {
         log("bcplayer --- onTemplateLoad");
         brightcove.createExperiences();
         player = brightcove.api.getExperience(experienceID);
@@ -383,14 +430,14 @@ var bcplayer = (function () {
         streamSense.setPlaylist();
     };
 
-    onTemplateReady = function () {
+    onTemplateReady = function() {
         if (templateReadyDone) {
             log("bcplayer --- onTemplateReadyDone");
             return;
         }
-        
+
         log("bcplayer --- ageRestricted: " + ageRestricted + ", video rating: " + video.rating);
-        if (ageRestricted && video.rating == "13+" && ( typeof userAge != 'undefined' && userAge === "under12" )) {
+        if (ageRestricted && video.rating == "13+" && (typeof userAge != 'undefined' && userAge === "under12")) {
             log("bcplayer --- User is under 12 don't display video player");
             $("img#ageRatingWarning").show();
             $('div.playerContainer').remove();
@@ -400,27 +447,27 @@ var bcplayer = (function () {
         log("bcplayer --- onTemplateReady");
         templateReadyDone = true;
         videoPlayer = player.getModule(APIModules.VIDEO_PLAYER);
-        
+
         if (playerType === "html") {
             adPath = adPathHTML5;
             adSite = adSite + "html5";
         }
-        
-        
+
+
         // get videoDTO id and array of cue points (in seconds)
-        videoPlayer.getCurrentVideo(function(result){
-        	video.bcId = result.id;
+        videoPlayer.getCurrentVideo(function(result) {
+            video.bcId = result.id;
 
             logCuePoints();
-            
-        	cuePointsModule.getCuePoints(video.bcId, function(result){
-        		for(var data in result){
-        			var cuepoint = result[data];
-        			if ( cuepoint.time > 0 ) {
-        				cuePoints.push(cuepoint);
-        			}
-        		}
-        	});
+
+            cuePointsModule.getCuePoints(video.bcId, function(result) {
+                for (var data in result) {
+                    var cuepoint = result[data];
+                    if (cuepoint.time > 0) {
+                        cuePoints.push(cuepoint);
+                    }
+                }
+            });
         });
 
 
@@ -437,51 +484,56 @@ var bcplayer = (function () {
         videoPlayer.addEventListener(mediaEvent.COMPLETE, onMediaComplete);
 
         // responsive and resize
-        videoPlayer.getCurrentRendition(function (renditionDTO) {
+        videoPlayer.getCurrentRendition(function(renditionDTO) {
             var newPercentage = (renditionDTO.frameHeight / renditionDTO.frameWidth) * 100;
             newPercentage = newPercentage + "%";
-            
-            if ( $(".playerContainer").length>0 && (typeof $(".playerContainer").style !== 'undefined' ) ) {
+
+            if ($(".playerContainer").length > 0 && (typeof $(".playerContainer").style !== 'undefined')) {
                 $(".playerContainer").style.paddingBottom = newPercentage;
             }
         });
     };
 
-    onTemplateError = function (event) {
+    onTemplateError = function(event) {
         log("type: " + event.type);
         log("errorType: " + event.errorType);
         log("code: " + event.code);
         log("info: " + event.info);
     };
 
-    getAdStarted = function () {
+    getAdStarted = function() {
         return adStarted;
     };
-    getIsMidroll = function () {
+    getIsMidroll = function() {
         return isMidroll;
     };
-    getPlayer = function () {
+
+    getCurrentVideoIndex = function(){
+        return currentVideoIndex;
+    };
+
+    getPlayer = function() {
         return player;
     };
-    getAPIModules = function () {
+    getAPIModules = function() {
         return APIModules;
     };
-    getMediaEvent = function () {
+    getMediaEvent = function() {
         return mediaEvent;
     };
-    getAdEvent = function () {
+    getAdEvent = function() {
         return adEvent;
     };
-    comscoreBeacon = function (c5) {
+    comscoreBeacon = function(c5) {
         COMSCORE.beacon({
-            c1 : 1,
-            c2 : videoMetrixC2,
-            c3 : siteTag,
-            c5 : c5
+            c1: 1,
+            c2: videoMetrixC2,
+            c3: siteTag,
+            c5: c5
         });
     };
 
-    streamSenseClip = function (part, duration, isAd, source) {
+    streamSenseClip = function(part, duration, isAd, source) {
         var classification, clip;
         duration = duration * 1000;
         if (isAd) {
@@ -491,16 +543,16 @@ var bcplayer = (function () {
                 classification = "va11";
             }
             clip = {
-                "ns_st_cn" : currentClip,
-                "ns_st_ci" : refId,
-                "ns_st_pn" : "1",
-                "ns_st_tp" : "1",
-                "ns_st_cl" : duration,
-                "ns_st_pu" : "Bell Media",
-                "ns_st_cu" : source,
-                "ns_st_ad" : "1",
-                "ns_st_ct" : classification,
-                "ns_st_de" : siteTag
+                "ns_st_cn": currentClip,
+                "ns_st_ci": refId,
+                "ns_st_pn": "1",
+                "ns_st_tp": "1",
+                "ns_st_cl": duration,
+                "ns_st_pu": "Bell Media",
+                "ns_st_cu": source,
+                "ns_st_ad": "1",
+                "ns_st_ct": classification,
+                "ns_st_de": siteTag
             };
         } else {
             if (duration > 600) {
@@ -509,32 +561,49 @@ var bcplayer = (function () {
                 classification = "vc11";
             }
             clip = {
-                "ns_st_cn" : mediaClip,
-                "ns_st_ci" : refId,
-                "ns_st_pn" : part,
-                "ns_st_tp" : "0",
-                "ns_st_cl" : duration,
-                "ns_st_pu" : "Bell Media",
-                "ns_st_cu" : source,
-                "ns_st_ct" : classification,
-                "ns_st_de" : siteTag
+                "ns_st_cn": mediaClip,
+                "ns_st_ci": refId,
+                "ns_st_pn": part,
+                "ns_st_tp": "0",
+                "ns_st_cl": duration,
+                "ns_st_pu": "Bell Media",
+                "ns_st_cu": source,
+                "ns_st_ct": classification,
+                "ns_st_de": siteTag
             };
         }
         streamSense.setClip(clip);
         currentClip += 1;
     };
 
+    loadVideo =  function(){
+        var newVideo;
+        if(currentVideoIndex < videoArray.length){
+            //set new Video
+            newVideo = videoArray[currentVideoIndex].id;
+            //load new video
+            videoPlayer.loadVideoByReferenceID(newVideo);
+            currentVideoIndex++
+
+        } else{
+            isMediaComplete = true;
+        }
+    };
+
+
+
     return {
-        init : init,
-        onTemplateLoaded : onTemplateLoaded,
-        onTemplateReady : onTemplateReady,
-        onTemplateError : onTemplateError,
-        bind : bind,
+        init: init,
+        onTemplateLoaded: onTemplateLoaded,
+        onTemplateReady: onTemplateReady,
+        onTemplateError: onTemplateError,
+        bind: bind,
         getAdStarted: getAdStarted,
         getIsMidroll: getIsMidroll,
         getPlayer: getPlayer,
         getAPIModules: getAPIModules,
         getMediaEvent: getMediaEvent,
+        getCurrentVideoIndex: getCurrentVideoIndex,
         getAdEvent: getAdEvent
     };
 }());

@@ -4,58 +4,6 @@
 	<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
     
     <script type="text/javascript" src="bcplayer.js"></script>
-    <script type="text/javascript">
-                                
-        var gptAdKeys = "showid%3D" + "1-1197877" + "%26" + "showname%3D" + "mayday";
-
-        bcplayer.init({
-            videoMetrixC2: "3005664",
-            streamSenseC2: "16433042",
-            siteTag: "CANALD",
-            autoStart:true,
-            ageRestricted:false,
-            refId: "D0143159_0101ACH",
-            video: {
-                duration:2695,
-                rating: "G"
-            },
-            videoType: "Épisodes complets",
-            gptAdUnit1: "/5479/sri.canalvie",
-            gptAdUnit2: "webtele",
-            gptAdKeys: gptAdKeys
-        });
-    </script>
-
-	<!-- VERSION LIGHT script type="text/javascript">
-	   var FBC = {};   
-	   FBC.gptAdUnit1 = "/5479/sri.canalvie/webtele" ;
-	   FBC.adSz = "9x10";
-	   
-	   FBC.onTemplateLoaded = function (experienceID) {
-	       brightcove.createExperiences();
-	       var player = brightcove.api.getExperience(experienceID);
-	       var APIModules = brightcove.api.modules.APIModules;
-	       
-	       FBC.playerType = player.type;
-	       FBC.mediaEvent = brightcove.api.events.MediaEvent;
-	       FBC.advertising = player.getModule(APIModules.ADVERTISING);
-	   };
-	   
-	   FBC.onTemplateReady = function () {
-		   var adUnit = FBC.gptAdUnit1;
-	       if (FBC.playerType === "html") {
-	    	   adUnit += "html5";
-	       }
-	       var adServerUrl = "http://pubads.g.doubleclick.net/gampad/ads?iu=" + adUnit
-	       + "&sz=" + FBC.adSz + "&gdfp_req=1&env=vp&output=xml_vast2&unviewed_position_start=1";
-	       
-	       var adPolicy = {};
-	       adPolicy.adServerURL = adServerUrl;     
-	       adPolicy.prerollAds = true;
-	       adPolicy.adPlayCap = 1;
-	       FBC.advertising.setAdPolicy(adPolicy);
-	   }
-	</script -->
 
 </head>
 
@@ -73,13 +21,43 @@
 	  <param name="isVid" value="true" />
 	  <param name="isUI" value="true" />
 	    <param name="wmode" value="transparent" />       
-	    <param name="@videoPlayer" value="ref:V0175584_0101ACH" />
+	    <param name="@videoPlayer" value="ref:V0185893_0101AMH" />
 	    <param name="includeAPI" value="true" />
         <param name="templateLoadHandler" value="bcplayer.onTemplateLoaded" />
         <param name="templateReadyHandler" value="bcplayer.onTemplateReady" />
 	</object>
 </div>
+    <script type="text/javascript">
 
+                                
+        var gptAdKeys = "showid%3D" + "1-1094346" + "%26" + "showname%3D" + "monetrangedependance";
+        if( typeof Krux !== "undefined"){
+            gptAdKeys += "%26" + "u%3D" + Krux.user ;
+        }
+
+        bcplayer.init({
+            videoMetrixC2: "3005664",
+            streamSenseC2: "16433042",
+            siteTag: "CANALVIE",
+            baseurl:"http://idp.securetve.com/rest/1.0/",
+            autoStart:true,
+            ageRestricted:false,
+            refId: "V0185893_0101AMH",
+            video: {
+                duration:127,
+                aisVideoId: "V0185893_0101AMH|1.1585546",
+                aisResource: "canalvie",
+                rating: "G"
+            },
+            videoType: "Extraits d'émission",
+            aisPlatformId: "urn:bellmedia:com:sp:astral:fr:canalvie:prod:1",
+            gptAdUnit1: "/5479/sri.canalvie",
+            gptAdUnit2: "webtele",
+            gptAdKeys: gptAdKeys,
+            currentVideoIndex: 0,
+            videoArray: [{"id":"V0177600_0101AMH","title":"Trucs et conseils en vidéo"},{"id":"V0127944_0101AMH","title":"Toc Toc Docteur"},{"id":"V0127925_0101AMH","title":"Toc Toc Docteur"},{"id":"V0127936_0101AMH","title":"Toc Toc Docteur"},{"id":"V0127930_0101AMH","title":"Toc Toc Docteur"},{"id":"V0127939_0101AMH","title":"Toc Toc Docteur"},{"id":"V0127934_0101AMH","title":"Toc Toc Docteur"},{"id":"V0127938_0101AMH","title":"Toc Toc Docteur"},{"id":"V0127928_0101AMH","title":"Toc Toc Docteur"},{"id":"V0127931_0101AMH","title":"Toc Toc Docteur"}]          });
+
+    </script>
 
 
 
