@@ -164,6 +164,7 @@ var bcplayer = (function() {
         //Change the clip and notify the ad has started.
         streamSenseClip("1", "0", true, "none");
         streamSense.notify(ns_.StreamSense.PlayerEvents.PLAY, {}, event.position * 1000);
+        setAds();
 
         onForcedMidrollCompleted()
     };
@@ -220,7 +221,10 @@ var bcplayer = (function() {
     };
 
     onMediaProgress = function(event) {
-
+        if (adStarted) {
+            setAds();
+        }
+        adStarted = false;
         if (isAfterMidroll) {
             //Set the second part of the media as the current clip
             streamSenseClip("2", event.duration * 1000, false, event.media.FLVFullLengthURL);
@@ -301,7 +305,7 @@ var bcplayer = (function() {
     };
 
     onMediaChange = function() {
-       setAds();
+
     };
 
     onMediaSeek = function(event) {
