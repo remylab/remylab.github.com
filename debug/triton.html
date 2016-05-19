@@ -1,0 +1,14 @@
+
+<!-- Player container -->
+<div id="td_container"></div>
+
+<!-- Now Playing information -->
+<h1>CuePoint / callsign = <span id="callsign"></span></h1>
+<div id="cuePoint"></div>
+
+<h1>Now Playing</h1>
+<div id="nowPlaying"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="TritonPlayer.js"></script>
+<script data-dojo-config="onReady:window.tdPlayerApiReady, async: 1, tlmSiblingOfDojo: 0, deps:['tdapi/run']" src="http://api.listenlive.co/tdplayerapi/2.6/dojo/dojo.js"></script>
